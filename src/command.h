@@ -21,10 +21,12 @@ public:
     void ExecCommand();
 
     /**
-     *@brief The `exit()` command.
+     *@brief The `exit` command.
      *
      */
     void exit();
+
+    void echo();
 };
 
 #endif // !_COMMAND_H_
