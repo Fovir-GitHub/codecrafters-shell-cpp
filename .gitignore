@@ -48,4 +48,4 @@ _deps
 build/
 vcpkg_installed
 
-main
+src/main
