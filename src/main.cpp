@@ -1,3 +1,4 @@
+#include "command.h"
 #include <cstdlib>
 #include <iostream>
 #include <sstream>
@@ -14,11 +15,11 @@ int main()
     {
         std::cout << "$ ";
 
-        std::string              input;
-        std::vector<std::string> command_and_arguments;
+        std::string input;
         std::getline(std::cin, input);
 
-        std::cout << input << ": command not found" << '\n';
+        Command command(input);
+        command.ExecCommand();
     }
 
     return 0;

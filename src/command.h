@@ -15,6 +15,8 @@ public:
     Command();
 
     void ExecCommand();
+
+    void exit();
 };
 
 #endif // !_COMMAND_H_
