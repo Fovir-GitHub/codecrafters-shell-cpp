@@ -18,3 +18,7 @@ Command::Command()
     command = "";
     arguments.clear();
 }
+
+void Command::ExecCommand()
+{
+}

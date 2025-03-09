@@ -13,6 +13,8 @@ private:
 public:
     Command(const std::string & line_command);
     Command();
+
+    void ExecCommand();
 };
 
 #endif // !_COMMAND_H_
