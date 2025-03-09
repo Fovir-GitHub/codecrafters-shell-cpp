@@ -39,7 +39,6 @@ public:
     void echo();
     /**
      *@brief The `type` command.
-     *
      */
     void type();
 };
