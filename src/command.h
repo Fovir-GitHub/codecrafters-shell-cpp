@@ -10,9 +10,18 @@ private:
     std::string              command;
     std::vector<std::string> arguments;
 
+    enum {
+        ERROR,
+        EXIT,
+        ECHO,
+        TYPE,
+    };
+
 public:
     Command(const std::string & line_command);
     Command();
+
+    int getCommand();
 
     /**
      *@brief Execute the command.
@@ -28,6 +37,8 @@ public:
      *@brief The `echo` command.
      */
     void echo();
+
+    void type();
 };
 
 #endif // !_COMMAND_H_

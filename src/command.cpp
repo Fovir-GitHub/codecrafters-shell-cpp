@@ -22,14 +22,36 @@ Command::Command()
     arguments.clear();
 }
 
-void Command::ExecCommand()
+int Command::getCommand()
 {
     if (command == "exit")
-        return exit();
+        return EXIT;
     else if (command == "echo")
-        return echo();
+        return ECHO;
+    else if (command == "type")
+        return TYPE;
     else
+        return ERROR;
+}
+
+void Command::ExecCommand()
+{
+    int command_id = getCommand();
+
+    switch (command_id)
+    {
+    case EXIT:
+        exit();
+        break;
+    case ECHO:
+        echo();
+        break;
+    case TYPE:
+        type();
+        break;
+    default:
         std::cout << command << ": command not found" << '\n';
+    }
 
     return;
 }
