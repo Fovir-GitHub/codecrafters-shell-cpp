@@ -26,6 +26,8 @@ void Command::ExecCommand()
 {
     if (command == "exit")
         return exit();
+    else if (command == "echo")
+        return echo();
     else
         std::cout << command << ": command not found" << '\n';
 
@@ -47,6 +49,13 @@ void Command::exit()
     }
 
     std::exit(result);
+
+    return;
+}
+
+void Command::echo()
+{
+    for (auto & s : arguments) std::cout << s << ' ';
 
     return;
 }
