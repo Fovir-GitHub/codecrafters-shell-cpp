@@ -15,6 +15,7 @@ private:
         EXIT,
         ECHO,
         TYPE,
+        EXECUTABLE,
     };
 
 public:
@@ -49,6 +50,8 @@ public:
      * @return std::string The environment variable
      */
     std::string GetEnvironmentVariable(const std::string & env_type);
+
+    std::string GetFullPath(std::string & cmd);
 };
 
 #endif // !_COMMAND_H_

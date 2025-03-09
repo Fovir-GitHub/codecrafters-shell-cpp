@@ -32,6 +32,8 @@ int Command::getCommand()
         return ECHO;
     else if (command == "type")
         return TYPE;
+    else if (GetFullPath(command) != "")
+        return EXECUTABLE;
     else
         return ERROR;
 }
@@ -51,6 +53,13 @@ void Command::ExecCommand()
     case TYPE:
         type();
         break;
+    case EXECUTABLE:
+    {
+        std::string cmd(command);
+        for (auto & s : arguments) cmd = cmd + " " + s;
+        std::system(cmd.c_str());
+        break;
+    }
     default:
         std::cout << command << ": command not found" << '\n';
     }
@@ -88,28 +97,16 @@ void Command::echo()
 
 void Command::type()
 {
+    int command_id = Command(arguments[0]).getCommand();
+
     // The command is built in.
-    if (Command(arguments[0]).getCommand() != ERROR)
+    if (command_id != ERROR && command_id != EXECUTABLE)
         std::cout << arguments[0] << " is a shell builtin" << '\n';
-    else
-    {
-        // The command is not built in.
-        std::string       env_path = GetEnvironmentVariable("PATH");
-        std::stringstream ss(env_path);
-        std::string       path;
-
-        while (std::getline(ss, path, ':')) /* Split "PATH" with ':' */
-        {
-            std::string full_path = path + "/" + arguments[0];
-            if (std::filesystem::exists(full_path))
-            {
-                std::cout << arguments[0] << " is " << full_path << '\n';
-                return;
-            }
-        }
-
+    else if (command_id == EXECUTABLE) /* The command is external */
+        std::cout << arguments[0] << " is " << GetFullPath(arguments[0])
+                  << '\n';
+    else /* The command is error */
         std::cerr << arguments[0] << ": not found" << '\n';
-    }
 
     return;
 }
@@ -117,4 +114,20 @@ void Command::type()
 std::string Command::GetEnvironmentVariable(const std::string & env_type)
 {
     return std::getenv(env_type.c_str());
+}
+
+std::string Command::GetFullPath(std::string & cmd)
+{
+    std::string       env_path = GetEnvironmentVariable("PATH");
+    std::stringstream ss(env_path);
+    std::string       path;
+
+    while (std::getline(ss, path, ':')) /* Split "PATH" with ':' */
+    {
+        std::string full_path = path + "/" + cmd;
+        if (std::filesystem::exists(full_path))
+            return full_path;
+    }
+
+    return "";
 }
