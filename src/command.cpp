@@ -1,6 +1,8 @@
 #include "command.h"
 #include <cstdlib>
+#include <filesystem>
 #include <iostream>
+#include <ranges>
 #include <sstream>
 
 Command::Command(const std::string & line_command)
@@ -86,10 +88,15 @@ void Command::echo()
 
 void Command::type()
 {
-    if (Command(arguments[0]).getCommand() == ERROR)
-        std::cerr << arguments[0] << ": not found" << '\n';
-    else
+    if (Command(arguments[0]).getCommand() != ERROR)
         std::cout << arguments[0] << " is a shell builtin" << '\n';
+    else
+        std::cerr << arguments[0] << ": not found" << '\n';
 
     return;
+}
+
+std::string Command::GetEnvironmentVariable(const std::string & env_type)
+{
+    return std::getenv(env_type.c_str());
 }

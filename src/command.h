@@ -41,6 +41,8 @@ public:
      *@brief The `type` command.
      */
     void type();
+
+    std::string GetEnvironmentVariable(const std::string & env_type);
 };
 
 #endif // !_COMMAND_H_
