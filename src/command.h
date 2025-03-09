@@ -14,8 +14,16 @@ public:
     Command(const std::string & line_command);
     Command();
 
+    /**
+     *@brief Execute the command.
+     *
+     */
     void ExecCommand();
 
+    /**
+     *@brief The `exit()` command.
+     *
+     */
     void exit();
 };
 
