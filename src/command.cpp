@@ -83,3 +83,13 @@ void Command::echo()
 
     return;
 }
+
+void Command::type()
+{
+    if (Command(arguments[0]).getCommand() == ERROR)
+        std::cerr << arguments[0] << ": not found" << '\n';
+    else
+        std::cout << arguments[0] << " is a shell builtin" << '\n';
+
+    return;
+}
