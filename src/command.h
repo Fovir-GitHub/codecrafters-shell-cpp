@@ -16,16 +16,17 @@ public:
 
     /**
      *@brief Execute the command.
-     *
      */
     void ExecCommand();
 
     /**
      *@brief The `exit` command.
-     *
      */
     void exit();
 
+    /**
+     *@brief The `echo` command.
+     */
     void echo();
 };
 

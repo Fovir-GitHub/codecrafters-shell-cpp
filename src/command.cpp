@@ -55,6 +55,7 @@ void Command::exit()
 
 void Command::echo()
 {
+    // Output all arguments.
     for (auto & s : arguments) std::cout << s << ' ';
     std::cout << '\n';
 
