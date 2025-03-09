@@ -88,15 +88,17 @@ void Command::echo()
 
 void Command::type()
 {
+    // The command is built in.
     if (Command(arguments[0]).getCommand() != ERROR)
         std::cout << arguments[0] << " is a shell builtin" << '\n';
     else
     {
+        // The command is not built in.
         std::string       env_path = GetEnvironmentVariable("PATH");
         std::stringstream ss(env_path);
         std::string       path;
 
-        while (std::getline(ss, path, ':'))
+        while (std::getline(ss, path, ':')) /* Split "PATH" with ':' */
         {
             std::string full_path = path + "/" + arguments[0];
             if (std::filesystem::exists(full_path))

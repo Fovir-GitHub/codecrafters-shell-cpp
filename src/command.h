@@ -42,6 +42,12 @@ public:
      */
     void type();
 
+    /**
+     *@brief Get the environment variable.
+     *
+     * @param env_type The type of environment variable.
+     * @return std::string The environment variable
+     */
     std::string GetEnvironmentVariable(const std::string & env_type);
 };
 
