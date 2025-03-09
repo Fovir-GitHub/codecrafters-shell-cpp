@@ -37,7 +37,10 @@ public:
      *@brief The `echo` command.
      */
     void echo();
-
+    /**
+     *@brief The `type` command.
+     *
+     */
     void type();
 };
 
