@@ -91,7 +91,23 @@ void Command::type()
     if (Command(arguments[0]).getCommand() != ERROR)
         std::cout << arguments[0] << " is a shell builtin" << '\n';
     else
+    {
+        std::string       env_path = GetEnvironmentVariable("PATH");
+        std::stringstream ss(env_path);
+        std::string       path;
+
+        while (std::getline(ss, path, ':'))
+        {
+            std::string full_path = path + "/" + arguments[0];
+            if (std::filesystem::exists(full_path))
+            {
+                std::cout << arguments[0] << " is " << full_path << '\n';
+                return;
+            }
+        }
+
         std::cerr << arguments[0] << ": not found" << '\n';
+    }
 
     return;
 }
