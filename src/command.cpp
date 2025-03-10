@@ -5,6 +5,11 @@
 #include <ranges>
 #include <sstream>
 
+void Command::FallBack()
+{
+    std::cout << command << ": command not found" << '\n';
+}
+
 Command::Command(const std::string & line_command)
 {
     std::istringstream iss(line_command);

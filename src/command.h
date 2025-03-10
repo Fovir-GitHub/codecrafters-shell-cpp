@@ -25,6 +25,8 @@ private:
         EXECUTABLE,
     };
 
+    void FallBack();
+
 public:
     Command(const std::string & line_command);
     Command();
