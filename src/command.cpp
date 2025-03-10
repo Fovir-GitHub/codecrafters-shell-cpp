@@ -5,6 +5,8 @@
 #include <ranges>
 #include <sstream>
 
+namespace fs = std::filesystem;
+
 void Command::FallBack()
 {
     std::cout << command << ": command not found" << '\n';
@@ -106,9 +108,20 @@ void Command::pwd()
 
 void Command::cd()
 {
-    namespace fs = std::filesystem;
+    std::string home_path      = GetEnvironmentVariable("HOME");
+    std::string home_character = "~";
+    std::string temp_new_dir(arguments[0]);
+    size_t      start_position = 0;
 
-    fs::path new_dir = arguments[0];
+    while ((start_position = temp_new_dir.find(
+                home_character, start_position)) != std::string::npos)
+    {
+        temp_new_dir.replace(start_position, home_character.length(),
+                             home_path);
+        start_position += home_path.length();
+    }
+
+    fs::path new_dir(temp_new_dir);
     if (fs::exists(new_dir) && fs::is_directory(new_dir))
         fs::current_path(new_dir);
     else
