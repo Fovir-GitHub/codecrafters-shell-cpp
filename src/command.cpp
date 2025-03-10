@@ -46,7 +46,7 @@ void Command::RunExternalCommand()
         FallBack();
     else
     {
-        std::string full_command(full_path);
+        std::string full_command(command);
         for (auto & arg : arguments) full_command += (" " + arg);
         std::system(full_command.c_str());
     }
