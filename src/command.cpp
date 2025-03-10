@@ -72,6 +72,21 @@ void Command::ExecCommand()
     return;
 }
 
+void Command::RunExternalCommand()
+{
+    std::string full_path = GetFullPath(command);
+    if (full_path == "")
+        FallBack();
+    else
+    {
+        std::string full_command(full_path);
+        for (auto & arg : arguments) full_command += (" " + arg);
+        std::system(full_command.c_str());
+    }
+
+    return;
+}
+
 void Command::exit()
 {
     int result;

@@ -15,6 +15,7 @@ private:
         {"exit", [this]() { exit(); }},
         {"echo", [this]() { echo(); }},
         {"type", [this]() { type(); }},
+        {"external", [this]() { RunExternalCommand(); }},
     };
 
     enum {
@@ -37,6 +38,8 @@ public:
      *@brief Execute the command.
      */
     void ExecCommand();
+
+    void RunExternalCommand();
 
     /**
      *@brief The `exit` command.
