@@ -112,7 +112,11 @@ void Command::exit()
 void Command::echo()
 {
     // Output all arguments.
-    for (auto & s : arguments) std::cout << s << ' ';
+    for (auto & s : arguments)
+        std::cout << ((s.front() == '\'' && s.back() == '\'')
+                          ? s.substr(1, s.size() - 2)
+                          : s)
+                  << ' ';
     std::cout << '\n';
 
     return;
