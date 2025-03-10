@@ -104,6 +104,19 @@ void Command::pwd()
     return;
 }
 
+void Command::cd()
+{
+    namespace fs = std::filesystem;
+
+    fs::path new_dir = arguments[0];
+    if (fs::exists(new_dir) && fs::is_directory(new_dir))
+        fs::current_path(new_dir);
+    else
+        std::cerr << "cd: " << new_dir << ": No such file or directory" << '\n';
+
+    return;
+}
+
 std::string Command::GetEnvironmentVariable(const std::string & env_type)
 {
     return std::getenv(env_type.c_str());

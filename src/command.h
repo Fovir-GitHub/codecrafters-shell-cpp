@@ -16,6 +16,7 @@ private:
         {"echo", [this]() { echo(); }},
         {"type", [this]() { type(); }},
         {"pwd", [this]() { pwd(); }},
+        {"cd", [this]() { cd(); }},
         {"external", [this]() { RunExternalCommand(); }},
     };
 
@@ -55,6 +56,11 @@ public:
      *@brief The `pwd` command.
      */
     void pwd();
+
+    /**
+     *@brief The `cd` command.
+     */
+    void cd();
 
     /**
      *@brief Get the environment variable.
