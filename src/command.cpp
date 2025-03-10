@@ -1,9 +1,11 @@
 #include "command.h"
+#include <cctype>
 #include <cstdlib>
 #include <filesystem>
 #include <iostream>
 #include <ranges>
 #include <sstream>
+#include <stack>
 
 namespace fs = std::filesystem;
 
@@ -15,12 +17,37 @@ void Command::FallBack()
 Command::Command(const std::string & line_command)
 {
     std::istringstream iss(line_command);
-    std::string        argument;
+    std::string        argument("");
 
     arguments.clear();
     iss >> command; /* Get the command. */
-    while (iss >> argument)
-        arguments.push_back(argument); /* Get the arguments. */
+
+    char ch = 0;
+    while (iss.get(ch))
+    {
+        if (ch == '\'')
+        {
+            while (iss.get(ch) && ch != '\'') argument += ch;
+            arguments.push_back(argument);
+            argument.clear();
+            continue;
+        }
+
+        if (!isgraph(ch))
+        {
+            if (!argument.empty())
+            {
+                arguments.push_back(argument);
+                argument.clear();
+            }
+            continue;
+        }
+
+        argument += ch;
+    }
+
+    if (!argument.empty())
+        arguments.push_back(argument);
 
     arguments.push_back(""); /* Add an empty argument as the final argument. */
 }
