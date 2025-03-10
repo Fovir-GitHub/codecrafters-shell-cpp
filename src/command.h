@@ -15,15 +15,8 @@ private:
         {"exit", [this]() { exit(); }},
         {"echo", [this]() { echo(); }},
         {"type", [this]() { type(); }},
+        {"pwd", [this]() { pwd(); }},
         {"external", [this]() { RunExternalCommand(); }},
-    };
-
-    enum {
-        ERROR,
-        EXIT,
-        ECHO,
-        TYPE,
-        EXECUTABLE,
     };
 
     void FallBack();
@@ -52,10 +45,16 @@ public:
      *@brief The `echo` command.
      */
     void echo();
+
     /**
      *@brief The `type` command.
      */
     void type();
+
+    /**
+     *@brief The `pwd` command.
+     */
+    void pwd();
 
     /**
      *@brief Get the environment variable.

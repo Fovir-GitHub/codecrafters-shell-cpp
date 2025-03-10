@@ -97,6 +97,11 @@ void Command::type()
     return;
 }
 
+void Command::pwd()
+{
+    std::cout << std::filesystem::current_path().string() << '\n';
+}
+
 std::string Command::GetEnvironmentVariable(const std::string & env_type)
 {
     return std::getenv(env_type.c_str());
