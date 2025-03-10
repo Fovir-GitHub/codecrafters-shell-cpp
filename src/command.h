@@ -32,8 +32,6 @@ public:
     Command(const std::string & line_command);
     Command();
 
-    int getCommand();
-
     /**
      *@brief Execute the command.
      */

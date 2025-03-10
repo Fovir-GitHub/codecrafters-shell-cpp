@@ -29,45 +29,12 @@ Command::Command()
     arguments.clear();
 }
 
-int Command::getCommand()
-{
-    if (command == "exit")
-        return EXIT;
-    else if (command == "echo")
-        return ECHO;
-    else if (command == "type")
-        return TYPE;
-    else if (GetFullPath(command) != "")
-        return EXECUTABLE;
-    else
-        return ERROR;
-}
-
 void Command::ExecCommand()
 {
-    int command_id = getCommand();
-
-    switch (command_id)
-    {
-    case EXIT:
-        exit();
-        break;
-    case ECHO:
-        echo();
-        break;
-    case TYPE:
-        type();
-        break;
-    case EXECUTABLE:
-    {
-        std::string cmd(command);
-        for (auto & s : arguments) cmd = cmd + " " + s;
-        std::system(cmd.c_str());
-        break;
-    }
-    default:
-        std::cout << command << ": command not found" << '\n';
-    }
+    if (command_map.find(command) != command_map.end())
+        command_map[command]();
+    else
+        command_map["external"]();
 
     return;
 }
@@ -117,14 +84,13 @@ void Command::echo()
 
 void Command::type()
 {
-    int command_id = Command(arguments[0]).getCommand();
+    std::string temp_full_path = GetFullPath(arguments[0]);
 
     // The command is built in.
-    if (command_id != ERROR && command_id != EXECUTABLE)
+    if (command_map.find(arguments[0]) != command_map.end())
         std::cout << arguments[0] << " is a shell builtin" << '\n';
-    else if (command_id == EXECUTABLE) /* The command is external */
-        std::cout << arguments[0] << " is " << GetFullPath(arguments[0])
-                  << '\n';
+    else if (temp_full_path != "") /* The command is external */
+        std::cout << arguments[0] << " is " << temp_full_path << '\n';
     else /* The command is error */
         std::cerr << arguments[0] << ": not found" << '\n';
 
