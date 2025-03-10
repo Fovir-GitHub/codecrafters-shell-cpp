@@ -28,6 +28,8 @@ Command::Command(const std::string & line_command)
         if (ch == '\'')
         {
             while (iss.get(ch) && ch != '\'') argument += ch;
+            if (iss.peek() == '\'')
+                continue;
             arguments.push_back(argument);
             argument.clear();
             continue;
