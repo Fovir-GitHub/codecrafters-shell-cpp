@@ -104,6 +104,7 @@ std::string Command::GetEnvironmentVariable(const std::string & env_type)
 
 std::string Command::GetFullPath(std::string & cmd)
 {
+    // Get the environment variable PATH
     std::string       env_path = GetEnvironmentVariable("PATH");
     std::stringstream ss(env_path);
     std::string       path;
@@ -111,9 +112,9 @@ std::string Command::GetFullPath(std::string & cmd)
     while (std::getline(ss, path, ':')) /* Split "PATH" with ':' */
     {
         std::string full_path = path + "/" + cmd;
-        if (std::filesystem::exists(full_path))
+        if (std::filesystem::exists(full_path)) /* If the command exists. */
             return full_path;
     }
 
-    return "";
+    return ""; /* The command does not exist. */
 }

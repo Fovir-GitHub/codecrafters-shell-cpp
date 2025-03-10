@@ -37,6 +37,10 @@ public:
      */
     void ExecCommand();
 
+    /**
+     *@brief Execute external command.
+     *
+     */
     void RunExternalCommand();
 
     /**
@@ -61,6 +65,12 @@ public:
      */
     std::string GetEnvironmentVariable(const std::string & env_type);
 
+    /**
+     *@brief Get the full path of external commands.
+     *
+     * @param cmd
+     * @return std::string The full absolute path of the command.
+     */
     std::string GetFullPath(std::string & cmd);
 };
 
