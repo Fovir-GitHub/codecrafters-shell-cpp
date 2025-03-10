@@ -22,20 +22,12 @@ Command::Command(const std::string & line_command)
     arguments.clear();
     iss >> command; /* Get the command. */
 
-    char ch = 0;
+    char ch       = 0;
+    bool is_quote = false;
+
     while (iss.get(ch))
     {
-        if (ch == '\'')
-        {
-            while (iss.get(ch) && ch != '\'') argument += ch;
-            if (iss.peek() == '\'')
-                continue;
-            arguments.push_back(argument);
-            argument.clear();
-            continue;
-        }
-
-        if (!isgraph(ch))
+        if (!isgraph(ch) && !is_quote)
         {
             if (!argument.empty())
             {
@@ -43,6 +35,19 @@ Command::Command(const std::string & line_command)
                 argument.clear();
             }
             continue;
+        }
+
+        if (ch == '\'' && !is_quote)
+            is_quote = true;
+        else if (ch == '\'' && is_quote)
+        {
+            if (iss.peek() == '\'')
+            {
+                iss.get();
+                continue;
+            }
+            else
+                is_quote = false;
         }
 
         argument += ch;
