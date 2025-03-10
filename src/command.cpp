@@ -112,7 +112,8 @@ void Command::cd()
     if (fs::exists(new_dir) && fs::is_directory(new_dir))
         fs::current_path(new_dir);
     else
-        std::cerr << "cd: " << new_dir << ": No such file or directory" << '\n';
+        std::cerr << "cd: " << new_dir.string() << ": No such file or directory"
+                  << '\n';
 
     return;
 }
