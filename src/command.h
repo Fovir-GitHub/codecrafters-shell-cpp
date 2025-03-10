@@ -1,14 +1,21 @@
 #ifndef _COMMAND_H_
 #define _COMMAND_H_
 
+#include <functional>
 #include <string>
+#include <unordered_map>
 #include <vector>
 
 class Command
 {
 private:
-    std::string              command;
-    std::vector<std::string> arguments;
+    std::string                                            command;
+    std::vector<std::string>                               arguments;
+    std::unordered_map<std::string, std::function<void()>> command_map = {
+        {"exit", [this]() { exit(); }},
+        {"echo", [this]() { echo(); }},
+        {"type", [this]() { type(); }},
+    };
 
     enum {
         ERROR,
