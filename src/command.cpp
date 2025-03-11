@@ -52,7 +52,7 @@ Command::Command(const std::string & line_command)
         else if (ch == '\"')
         {
             argument += ch;
-            while (iss >> ch)
+            while (iss.get(ch))
             {
                 argument += ch;
                 if (ch == '\"' && iss.peek() != '\"')
@@ -124,7 +124,8 @@ void Command::echo()
 {
     // Output all arguments.
     for (auto & s : arguments)
-        std::cout << ((s.front() == '\'' && s.back() == '\'')
+        std::cout << (((s.front() == '\'' && s.back() == '\'') ||
+                       (s.front() == '\"' && s.back() == '\"'))
                           ? s.substr(1, s.size() - 2)
                           : s)
                   << ' ';
