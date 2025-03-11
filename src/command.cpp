@@ -17,6 +17,7 @@ void Command::FallBack()
 Command::Command(const std::string & line_command)
 {
     enum QUOTE_TYPE { SINGLE, DOUBLE, NONE };
+    const std::string SPECIAL_CHARACTER_SET = "\"\'$\\\n";
 
     std::istringstream iss(line_command);
     std::string        argument("");
@@ -45,7 +46,10 @@ Command::Command(const std::string & line_command)
         if (ch == '\\')
         {
             // Append the next character.
-            argument += iss.get();
+            argument +=
+                ((SPECIAL_CHARACTER_SET.find(iss.peek()) == std::string::npos)
+                     ? ch
+                     : iss.get());
             continue;
         }
 
