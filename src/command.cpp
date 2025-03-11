@@ -16,18 +16,20 @@ void Command::FallBack()
 
 Command::Command(const std::string & line_command)
 {
+    enum QUOTE_TYPE { SINGLE, DOUBLE, NONE };
+
     std::istringstream iss(line_command);
     std::string        argument("");
 
     arguments.clear();
     iss >> command; /* Get the command. */
 
-    char ch              = 0;
-    bool is_single_quote = false;
+    char ch         = 0;
+    int  quote_type = QUOTE_TYPE::NONE;
 
     while (iss.get(ch))
     {
-        if (!isgraph(ch) && !is_single_quote)
+        if (!isgraph(ch) && quote_type == QUOTE_TYPE::NONE)
         {
             if (!argument.empty())
             {
@@ -37,28 +39,17 @@ Command::Command(const std::string & line_command)
             continue;
         }
 
-        if (ch == '\'' && !is_single_quote)
-            is_single_quote = true;
-        else if (ch == '\'' && is_single_quote)
+        if ((ch == '\'' || ch == '\"') && quote_type == QUOTE_TYPE::NONE)
+            quote_type = (ch == '\'' ? QUOTE_TYPE::SINGLE : QUOTE_TYPE::DOUBLE);
+        else if ((ch == '\'' || ch == '\"') && quote_type != QUOTE_TYPE::NONE)
         {
-            if (iss.peek() == '\'')
+            if (iss.peek() == ch)
             {
                 iss.get();
                 continue;
             }
             else
-                is_single_quote = false;
-        }
-        else if (ch == '\"')
-        {
-            argument += ch;
-            while (iss.get(ch))
-            {
-                argument += ch;
-                if (ch == '\"' && iss.peek() != '\"')
-                    break;
-            }
-            continue;
+                quote_type = QUOTE_TYPE::NONE;
         }
 
         argument += ch;
