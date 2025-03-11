@@ -43,7 +43,7 @@ Command::Command(const std::string & line_command)
         }
 
         // The character is the backslash and not in the quote sign.
-        if (ch == '\\')
+        if (ch == '\\' && quote_type != QUOTE_TYPE::SINGLE)
         {
             // Append the next character.
             argument +=
