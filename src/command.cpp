@@ -17,7 +17,7 @@ void Command::FallBack()
 Command::Command(const std::string & line_command)
 {
     enum QUOTE_TYPE { SINGLE, DOUBLE, NONE };
-    const std::string SPECIAL_CHARACTER_SET = "\"\'$\\\n";
+    const std::string SPECIAL_CHARACTER_SET = "\"$\\\n";
 
     std::istringstream iss(line_command);
     std::string        argument("");
