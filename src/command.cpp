@@ -29,33 +29,39 @@ Command::Command(const std::string & line_command)
 
     while (iss.get(ch))
     {
+        // If the character is invisible and not in quote sign.
         if (!isgraph(ch) && quote_type == QUOTE_TYPE::NONE)
         {
+            // The argument is not empty.
             if (!argument.empty())
             {
                 arguments.push_back(argument);
                 argument.clear();
             }
-            continue;
+            continue; /* Skip */
         }
 
+        // The character is the first quote sign.
         if ((ch == '\'' || ch == '\"') && quote_type == QUOTE_TYPE::NONE)
+            // Update the quote_type
             quote_type = (ch == '\'' ? QUOTE_TYPE::SINGLE : QUOTE_TYPE::DOUBLE);
         else if ((ch == '\'' && quote_type == QUOTE_TYPE::SINGLE) ||
                  (ch == '\"' && quote_type == QUOTE_TYPE::DOUBLE))
         {
+            // The next character is the same quote sign.
             if (iss.peek() == ch)
             {
-                iss.get();
+                iss.get(); /* Ignore the next quote sign and continue. */
                 continue;
             }
             else
-                quote_type = QUOTE_TYPE::NONE;
+                quote_type = QUOTE_TYPE::NONE; /* The end quote sign. */
         }
 
-        argument += ch;
+        argument += ch; /* Append the character to the argument. */
     }
 
+    // Push the remaining argument.
     if (!argument.empty())
         arguments.push_back(argument);
 
