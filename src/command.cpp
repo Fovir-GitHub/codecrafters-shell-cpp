@@ -67,12 +67,16 @@ Command::Command(const std::string & line_command)
                 iss.get(); /* Ignore the next quote sign and continue. */
                 continue;
             }
+            // The next character is visible.
             else if (std::isgraph(iss.peek()))
             {
+                // Ignore current character and append the next character.
                 argument += iss.get();
-                quote_type = QUOTE_TYPE::NONE;
+                quote_type = QUOTE_TYPE::NONE; /* Update the quote_type. */
+
+                // The first character of current argument must be quote sign.
                 argument.erase(argument.begin());
-                continue;
+                continue; /* Skip */
             }
             else
                 quote_type = QUOTE_TYPE::NONE; /* The end quote sign. */
