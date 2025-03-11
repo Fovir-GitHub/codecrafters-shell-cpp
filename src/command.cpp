@@ -38,8 +38,8 @@ Command::Command(const std::string & line_command)
 
             if (command_map.find(command) == command_map.end())
             {
-                command.insert(command.begin(), '\"');
-                command += '\"';
+                command.insert(command.begin(), quote_sign);
+                command += quote_sign;
             }
 
             break;
@@ -236,7 +236,8 @@ std::string Command::GetFullPath(std::string cmd)
     std::string       path;
 
     // The external command with single quote.
-    if (cmd.front() == '\"' && cmd.back() == '\"')
+    if ((cmd.front() == '\"' && cmd.back() == '\"') ||
+        (cmd.front() == '\'' && cmd.back() == '\''))
         cmd = cmd.substr(1, cmd.size() - 2);
 
     while (std::getline(ss, path, ':')) /* Split "PATH" with ':' */
