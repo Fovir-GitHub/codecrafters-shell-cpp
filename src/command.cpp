@@ -58,11 +58,12 @@ Command::Command(const std::string & line_command)
         {
             if (std::isgraph(iss.peek()))
             {
-                iss.get();
+                argument += iss.get();
                 quote_type = QUOTE_TYPE::NONE;
                 argument.erase(argument.begin());
                 continue;
             }
+
             // The next character is the same quote sign.
             if (iss.peek() == ch)
             {
