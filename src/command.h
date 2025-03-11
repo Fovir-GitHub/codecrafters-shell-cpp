@@ -9,8 +9,9 @@
 class Command
 {
 private:
-    std::string                                            command;
-    std::vector<std::string>                               arguments;
+    const std::string        SPECIAL_CHARACTER_SET = "\"$\\\n";
+    std::string              command;
+    std::vector<std::string> arguments;
     std::unordered_map<std::string, std::function<void()>> command_map = {
         {"exit", [this]() { exit(); }},
         {"echo", [this]() { echo(); }},

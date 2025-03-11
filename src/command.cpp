@@ -17,7 +17,6 @@ void Command::FallBack()
 Command::Command(const std::string & line_command)
 {
     enum QUOTE_TYPE { SINGLE, DOUBLE, NONE };
-    const std::string SPECIAL_CHARACTER_SET = "\"$\\\n";
 
     std::istringstream iss(line_command);
     std::string        argument("");
@@ -39,8 +38,8 @@ Command::Command(const std::string & line_command)
 
             if (command_map.find(command) == command_map.end())
             {
-                command.insert(command.begin(), '\'');
-                command += '\'';
+                command.insert(command.begin(), '\"');
+                command += '\"';
             }
 
             break;
@@ -237,7 +236,7 @@ std::string Command::GetFullPath(std::string cmd)
     std::string       path;
 
     // The external command with single quote.
-    if (cmd.front() == '\'' && cmd.back() == '\'')
+    if (cmd.front() == '\"' && cmd.back() == '\"')
         cmd = cmd.substr(1, cmd.size() - 2);
 
     while (std::getline(ss, path, ':')) /* Split "PATH" with ':' */
