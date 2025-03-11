@@ -49,6 +49,17 @@ Command::Command(const std::string & line_command)
             else
                 is_single_quote = false;
         }
+        else if (ch == '\"')
+        {
+            argument += ch;
+            while (iss >> ch)
+            {
+                argument += ch;
+                if (ch == '\"' && iss.peek() != '\"')
+                    break;
+            }
+            continue;
+        }
 
         argument += ch;
     }
