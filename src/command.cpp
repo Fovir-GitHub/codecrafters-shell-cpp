@@ -42,7 +42,7 @@ Command::Command(const std::string & line_command)
         }
 
         // The character is the backslash and not in the quote sign.
-        if (ch == '\\' && quote_type == QUOTE_TYPE::NONE)
+        if (ch == '\\' && quote_type != QUOTE_TYPE::NONE)
         {
             // Append the next character.
             argument += iss.get();
@@ -56,6 +56,13 @@ Command::Command(const std::string & line_command)
         else if ((ch == '\'' && quote_type == QUOTE_TYPE::SINGLE) ||
                  (ch == '\"' && quote_type == QUOTE_TYPE::DOUBLE))
         {
+            if (std::isgraph(iss.peek()))
+            {
+                iss.get();
+                quote_type = QUOTE_TYPE::NONE;
+                argument.erase(argument.begin());
+                continue;
+            }
             // The next character is the same quote sign.
             if (iss.peek() == ch)
             {
