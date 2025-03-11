@@ -47,7 +47,8 @@ Command::Command(const std::string & line_command)
         {
             // Append the next character.
             argument +=
-                ((SPECIAL_CHARACTER_SET.find(iss.peek()) == std::string::npos)
+                ((quote_type == QUOTE_TYPE::DOUBLE &&
+                  (SPECIAL_CHARACTER_SET.find(iss.peek())) == std::string::npos)
                      ? ch
                      : iss.get());
             continue;
