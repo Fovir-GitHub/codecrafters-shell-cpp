@@ -41,7 +41,8 @@ Command::Command(const std::string & line_command)
 
         if ((ch == '\'' || ch == '\"') && quote_type == QUOTE_TYPE::NONE)
             quote_type = (ch == '\'' ? QUOTE_TYPE::SINGLE : QUOTE_TYPE::DOUBLE);
-        else if ((ch == '\'' || ch == '\"') && quote_type != QUOTE_TYPE::NONE)
+        else if ((ch == '\'' && quote_type == QUOTE_TYPE::SINGLE) ||
+                 (ch == '\"' && quote_type == QUOTE_TYPE::DOUBLE))
         {
             if (iss.peek() == ch)
             {
