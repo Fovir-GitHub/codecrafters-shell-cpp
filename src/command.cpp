@@ -38,8 +38,15 @@ Command::Command(const std::string & line_command)
             char quote_sign = ch;
             while (iss.get(ch) && ch != quote_sign) command += ch;
 
+            if (command_map.find(command) == command_map.end())
+            {
+                command.insert(command.begin(), '\'');
+                command += '\'';
+            }
+
             break;
         }
+
         command += ch;
     }
 
