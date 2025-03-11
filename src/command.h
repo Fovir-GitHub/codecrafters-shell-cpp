@@ -76,7 +76,7 @@ public:
      * @param cmd
      * @return std::string The full absolute path of the command.
      */
-    std::string GetFullPath(std::string & cmd);
+    std::string GetFullPath(std::string cmd);
 };
 
 #endif // !_COMMAND_H_

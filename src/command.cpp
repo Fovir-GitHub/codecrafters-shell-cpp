@@ -230,12 +230,15 @@ std::string Command::GetEnvironmentVariable(const std::string & env_type)
     return std::getenv(env_type.c_str());
 }
 
-std::string Command::GetFullPath(std::string & cmd)
+std::string Command::GetFullPath(std::string cmd)
 {
     // Get the environment variable PATH
     std::string       env_path = GetEnvironmentVariable("PATH");
     std::stringstream ss(env_path);
     std::string       path;
+
+    if (cmd.front() == '\'' && cmd.back() == '\'')
+        cmd = cmd.substr(1, cmd.size() - 2);
 
     while (std::getline(ss, path, ':')) /* Split "PATH" with ':' */
     {
