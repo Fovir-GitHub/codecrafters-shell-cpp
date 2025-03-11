@@ -23,10 +23,25 @@ Command::Command(const std::string & line_command)
     std::string        argument("");
 
     arguments.clear();
-    iss >> command; /* Get the command. */
+    // iss >> command; /* Get the command. */
 
     char ch         = 0;
     int  quote_type = QUOTE_TYPE::NONE;
+
+    command = "";
+    while (iss.get(ch))
+    {
+        if (!std::isgraph(ch))
+            break;
+        if (ch == '\'' || ch == '\"')
+        {
+            char quote_sign = ch;
+            while (iss.get(ch) && ch != quote_sign) command += ch;
+
+            break;
+        }
+        command += ch;
+    }
 
     while (iss.get(ch))
     {
