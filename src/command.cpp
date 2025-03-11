@@ -41,6 +41,14 @@ Command::Command(const std::string & line_command)
             continue; /* Skip */
         }
 
+        // The character is the backslash and not in the quote sign.
+        if (ch == '\\' && quote_type == QUOTE_TYPE::NONE)
+        {
+            // Append the next character.
+            argument += iss.get();
+            continue;
+        }
+
         // The character is the first quote sign.
         if ((ch == '\'' || ch == '\"') && quote_type == QUOTE_TYPE::NONE)
             // Update the quote_type
