@@ -139,7 +139,7 @@ void Command::type()
 
 void Command::pwd()
 {
-    std::cout << std::filesystem::current_path().string() << '\n';
+    std::cout << fs::current_path().string() << '\n';
 
     return;
 }
@@ -184,7 +184,7 @@ std::string Command::GetFullPath(std::string & cmd)
     while (std::getline(ss, path, ':')) /* Split "PATH" with ':' */
     {
         std::string full_path = path + "/" + cmd;
-        if (std::filesystem::exists(full_path)) /* If the command exists. */
+        if (fs::exists(full_path)) /* If the command exists. */
             return full_path;
     }
 
