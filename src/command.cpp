@@ -16,26 +16,44 @@ void Command::FallBack()
 
 Command::Command(const std::string & line_command)
 {
+    /*
+    The type of quote signs.
+    SINGLE: '\''
+    DOUBLE: '\"'
+    NONE: ''
+     */
     enum QUOTE_TYPE { SINGLE, DOUBLE, NONE };
 
     std::istringstream iss(line_command);
     std::string        argument("");
 
-    arguments.clear();
+    arguments.clear(); /* Clear the arguments vector. */
 
     char ch         = 0;
-    int  quote_type = QUOTE_TYPE::NONE;
+    int  quote_type = QUOTE_TYPE::NONE; /* Initialize with NONE. */
 
-    command = "";
+    command = ""; /* Initialize with empty string. */
+
+    // Get the command.
     while (iss.get(ch))
     {
+        // The character is invisible.
         if (!std::isgraph(ch))
             break;
+
+        // The character is quote sign.
         if (ch == '\'' || ch == '\"')
         {
+            // Backup the quote sign.
             char quote_sign = ch;
+
+            // Append the new characters until meeting paird quote sign.
             while (iss.get(ch) && ch != quote_sign) command += ch;
 
+            /*
+            If the command is external command,
+            then add quote signs around it.
+            */
             if (command_map.find(command) == command_map.end())
             {
                 command.insert(command.begin(), quote_sign);
@@ -45,27 +63,38 @@ Command::Command(const std::string & line_command)
             break;
         }
 
-        command += ch;
+        command += ch; /* Append the character by default. */
     }
 
+    // Get the arguments.
     while (iss.get(ch))
     {
-        // If the character is invisible and not in quote sign.
+        /*
+        If the character is invisible and not in quote sign,
+        then add the argument.
+        */
         if (!isgraph(ch) && quote_type == QUOTE_TYPE::NONE)
         {
             // The argument is not empty.
             if (!argument.empty())
             {
                 arguments.push_back(argument);
-                argument.clear();
+                argument.clear(); /* Clear the string for next argument. */
             }
             continue; /* Skip */
         }
 
-        // The character is the backslash and not in the quote sign.
+        // The character is the backslash and not in the single quote sign.
         if (ch == '\\' && quote_type != QUOTE_TYPE::SINGLE)
         {
-            // Append the next character.
+            /*
+            If it is in the double quote signs,
+            check the next character of backslash sign.
+            If the next character is not special character,
+            then append the original character, that is backslash directly.
+            Otherwise, treat the next character as the escape character
+            by ignoring the backslash and append the next character directly.
+            */
             argument +=
                 ((quote_type == QUOTE_TYPE::DOUBLE &&
                   (SPECIAL_CHARACTER_SET.find(iss.peek())) == std::string::npos)
@@ -84,7 +113,12 @@ Command::Command(const std::string & line_command)
             // The next character is the same quote sign.
             if (iss.peek() == ch)
             {
-                iss.get(); /* Ignore the next quote sign and continue. */
+                /*
+                The next character is the same quote sign,
+                so this is not the end of the quote.
+                Ignore the two quote sign and continue.
+                */
+                iss.get();
                 continue;
             }
             // The next character is visible.
@@ -120,6 +154,10 @@ Command::Command()
 
 void Command::ExecCommand()
 {
+    /*
+    If the command is built-in command, call the corresponding function.
+    Otherwise, call the external function to execute the command.
+    */
     if (command_map.find(command) != command_map.end())
         command_map[command]();
     else
@@ -130,14 +168,18 @@ void Command::ExecCommand()
 
 void Command::RunExternalCommand()
 {
+    // Get the real path of the external command at first.
     std::string full_path = GetFullPath(command);
-    if (full_path == "")
+
+    if (full_path == "") /* The command is not found. */
         FallBack();
     else
     {
         std::string full_command(command);
+
+        // Append the arguments to the command.
         for (auto & arg : arguments) full_command += (" " + arg);
-        std::system(full_command.c_str());
+        std::system(full_command.c_str()); /* Execute the function. */
     }
 
     return;
@@ -164,7 +206,7 @@ void Command::exit()
 
 void Command::echo()
 {
-    // Output all arguments.
+    // Output all arguments. And ignore the begin and end quote signs.
     for (auto & s : arguments)
         std::cout << (((s.front() == '\'' && s.back() == '\'') ||
                        (s.front() == '\"' && s.back() == '\"'))
