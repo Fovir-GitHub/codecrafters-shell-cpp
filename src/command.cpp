@@ -61,7 +61,7 @@ Command::Command(const std::string & line_command)
         else if ((ch == '\'' && quote_type == QUOTE_TYPE::SINGLE) ||
                  (ch == '\"' && quote_type == QUOTE_TYPE::DOUBLE))
         {
-            if (std::isgraph(iss.peek()))
+            if (std::isgraph(iss.peek()) && iss.peek() != ch)
             {
                 argument += iss.get();
                 quote_type = QUOTE_TYPE::NONE;
