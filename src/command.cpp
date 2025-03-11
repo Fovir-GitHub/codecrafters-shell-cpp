@@ -23,7 +23,6 @@ Command::Command(const std::string & line_command)
     std::string        argument("");
 
     arguments.clear();
-    // iss >> command; /* Get the command. */
 
     char ch         = 0;
     int  quote_type = QUOTE_TYPE::NONE;
@@ -237,6 +236,7 @@ std::string Command::GetFullPath(std::string cmd)
     std::stringstream ss(env_path);
     std::string       path;
 
+    // The external command with single quote.
     if (cmd.front() == '\'' && cmd.back() == '\'')
         cmd = cmd.substr(1, cmd.size() - 2);
 
