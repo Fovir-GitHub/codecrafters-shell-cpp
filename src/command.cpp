@@ -193,6 +193,10 @@ const int Command::GetRedirectType(const std::string & sign) const
         return REDIRECT_TYPE::STDOUT;
     else if (sign == "2>")
         return REDIRECT_TYPE::STDERR;
+    else if (sign == ">>" || sign == "1>>")
+        return REDIRECT_TYPE::APPEND_STDOUT;
+    else if (sign == "2>>")
+        return REDIRECT_TYPE::APPEND_STDERR;
     else
         return REDIRECT_TYPE::NONE;
 }
