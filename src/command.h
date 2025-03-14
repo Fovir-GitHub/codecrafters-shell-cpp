@@ -19,7 +19,7 @@ private:
     std::vector<std::string> arguments;
     int                      redirect_type;
     std::string              redirect_to;
-    std::streambuf *         backup_stdout;
+    std::streambuf *         backup_redirect;
     std::ofstream            redirect;
     std::unordered_map<std::string, std::function<void()>> command_map = {
         {"exit", [this]() { exit(); }},

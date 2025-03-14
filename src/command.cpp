@@ -171,7 +171,7 @@ Command::Command()
 Command::~Command()
 {
     if (redirect_type != REDIRECT_TYPE::NONE)
-        std::cout.rdbuf(backup_stdout);
+        std::cout.rdbuf(backup_redirect);
 }
 
 constexpr bool Command::IsExternalCommand() const
@@ -193,7 +193,7 @@ void Command::ExecCommand()
 {
     if (redirect_type != REDIRECT_TYPE::NONE)
     {
-        backup_stdout = std::cout.rdbuf();
+        backup_redirect = std::cout.rdbuf();
         redirect.open(redirect_to);
         std::cout.rdbuf(redirect.rdbuf());
     }
