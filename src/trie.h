@@ -25,6 +25,7 @@ public:
 
     void Insert(const std::string & s);
     bool Search(const std::string & s);
+    bool FindPrefix(const std::string & prefix);
 };
 
 #endif // !_TRIE_H_

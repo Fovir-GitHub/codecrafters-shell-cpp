@@ -29,3 +29,17 @@ bool Trie::Search(const std::string & s)
 
     return current->is_end;
 }
+
+bool Trie::FindPrefix(const std::string & prefix)
+{
+    auto current = root.get();
+    for (auto it : prefix)
+    {
+        if (!current->children.count(it))
+            return false;
+
+        current = current->children.at(it).get();
+    }
+
+    return true;
+}
