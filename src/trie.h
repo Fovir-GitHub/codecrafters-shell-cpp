@@ -24,6 +24,7 @@ public:
     Trie(bool ie) : root(std::make_shared<TrieNode>(ie)) {}
 
     void Insert(const std::string & s);
+    bool Search(const std::string & s);
 };
 
 #endif // !_TRIE_H_
