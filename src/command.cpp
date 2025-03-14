@@ -3,9 +3,9 @@
 #include <cstdlib>
 #include <filesystem>
 #include <iostream>
-#include <ranges>
 #include <sstream>
-#include <stack>
+#include <termios.h>
+#include <unistd.h>
 
 namespace fs = std::filesystem;
 
