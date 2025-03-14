@@ -156,9 +156,7 @@ Command::Command(const std::string & line_command)
     }
 
     if (redirect_type != REDIRECT_TYPE::NONE && !IsExternalCommand())
-    {
         arguments.erase(redirect_sign, arguments.end());
-    }
 
     arguments.push_back(""); /* Add an empty argument as the final argument. */
 }
