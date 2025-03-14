@@ -22,6 +22,7 @@ private:
     std::string                                            redirect_to;
     std::streambuf *                                       backup_redirect;
     std::ofstream                                          redirect;
+    std::unordered_map<std::string, std::string>           command_list;
     std::unordered_map<std::string, std::function<void()>> command_map = {
         {"exit", [this]() { exit(); }},
         {"echo", [this]() { echo(); }},
@@ -37,6 +38,8 @@ public:
     Command(const std::string & line_command);
     Command();
     ~Command();
+
+    void InitializeCommandList();
 
     /**
      *@brief Judge whether the command is external command.
@@ -61,7 +64,6 @@ public:
 
     /**
      *@brief Execute external command.
-     *
      */
     void RunExternalCommand();
 

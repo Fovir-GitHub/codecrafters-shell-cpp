@@ -32,6 +32,7 @@ Command::Command(const std::string & line_command)
     int quote_type        = QUOTE_TYPE::NONE; /* Initialize with NONE. */
 
     arguments.clear(); /* Clear the arguments vector. */
+    InitializeCommandList();
 
     // Get the command.
     while (iss.get(ch))
@@ -192,6 +193,28 @@ Command::~Command()
     }
 }
 
+void Command::InitializeCommandList()
+{
+    std::string       env_path = GetEnvironmentVariable("PATH");
+    std::stringstream ss(env_path);
+    std::string       path;
+
+    for (auto [key, value] : command_map)
+        if (key != "external")
+            command_list.insert({key, "builtin"});
+
+    while (std::getline(ss, path, ':'))
+        for (const auto & entry : fs::directory_iterator(path))
+            if (fs::is_regular_file(entry.path()))
+                if ((fs::status(entry.path()).permissions() &
+                     fs::perms::owner_exec) != fs::perms::none)
+                    command_list.insert(
+                        {entry.path().filename().string(),
+                         GetFullPath(entry.path().filename().string())});
+
+    return;
+}
+
 constexpr bool Command::IsExternalCommand() const
 {
     return command_map.find(command) == command_map.end();
@@ -251,19 +274,17 @@ void Command::ExecCommand()
 
 void Command::RunExternalCommand()
 {
-    // Get the real path of the external command at first.
-    std::string full_path = GetFullPath(command);
-
-    if (full_path == "") /* The command is not found. */
-        FallBack();
-    else
+    if (command_list.find(command) == command_list.end())
     {
-        std::string full_command(command);
-
-        // Append the arguments to the command.
-        for (auto & arg : arguments) full_command += (" " + arg);
-        std::system(full_command.c_str()); /* Execute the function. */
+        FallBack();
+        return;
     }
+
+    std::string full_command(command);
+
+    // Append the arguments to the command.
+    for (auto & arg : arguments) full_command += (" " + arg);
+    std::system(full_command.c_str()); /* Execute the function. */
 
     return;
 }
@@ -303,7 +324,10 @@ void Command::echo()
 
 void Command::type()
 {
-    std::string temp_full_path = GetFullPath(arguments[0]);
+    std::string temp_full_path =
+        (command_list.find(arguments[0]) == command_list.end()
+             ? ""
+             : command_list[arguments[0]]);
 
     // The command is built in.
     if (command_map.find(arguments[0]) != command_map.end())
