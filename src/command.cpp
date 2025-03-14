@@ -146,6 +146,10 @@ Command::Command(const std::string & line_command)
 
     for (auto arg = arguments.begin(); arg != arguments.end(); arg++)
     {
+        if (REDIRECT_SIGNS.find(*arg) != std::string::npos)
+        {
+        }
+
         if (*arg == ">" || *arg == "1>")
         {
             redirect_type = REDIRECT_TYPE::STDOUT;
@@ -177,6 +181,16 @@ Command::~Command()
 constexpr bool Command::IsExternalCommand() const
 {
     return command_map.find(command) == command_map.end();
+}
+
+const int Command::GetRedirectType(const std::string & sign) const
+{
+    if (sign == "1>" || sign == ">")
+        return REDIRECT_TYPE::STDOUT;
+    else if (sign == "2>")
+        return REDIRECT_TYPE::STDERR;
+    else
+        return REDIRECT_TYPE::NONE;
 }
 
 void Command::ExecCommand()

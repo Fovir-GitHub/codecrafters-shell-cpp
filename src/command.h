@@ -14,6 +14,7 @@ private:
     enum REDIRECT_TYPE { NONE, STDOUT, STDERR, APPEND_STDOUT, APPEND_STDERR };
 
     const std::string        SPECIAL_CHARACTER_SET = "\"$\\\n";
+    const std::string        REDIRECT_SIGNS        = "1> > 2> >> 1>> 2>>";
     std::string              command;
     std::vector<std::string> arguments;
     int                      redirect_type;
@@ -37,6 +38,7 @@ public:
     ~Command();
 
     constexpr bool IsExternalCommand() const;
+    const int      GetRedirectType(const std::string & sign) const;
 
     /**
      *@brief Execute the command.
