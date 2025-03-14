@@ -215,6 +215,13 @@ void Command::InitializeCommandList()
     return;
 }
 
+void Command::InitializeCompletionTree()
+{
+    for (const auto & [key, value] : command_list) completion_tree.Insert(key);
+
+    return;
+}
+
 constexpr bool Command::IsExternalCommand() const
 {
     return command_map.find(command) == command_map.end();

@@ -1,6 +1,7 @@
 #ifndef _COMMAND_H_
 #define _COMMAND_H_
 
+#include "trie.h"
 #include <fstream>
 #include <functional>
 #include <iostream>
@@ -23,6 +24,7 @@ private:
     std::streambuf *                                       backup_redirect;
     std::ofstream                                          redirect;
     std::unordered_map<std::string, std::string>           command_list;
+    Trie                                                   completion_tree;
     std::unordered_map<std::string, std::function<void()>> command_map = {
         {"exit", [this]() { exit(); }},
         {"echo", [this]() { echo(); }},
@@ -40,6 +42,8 @@ public:
     ~Command();
 
     void InitializeCommandList();
+
+    void InitializeCompletionTree();
 
     /**
      *@brief Judge whether the command is external command.
