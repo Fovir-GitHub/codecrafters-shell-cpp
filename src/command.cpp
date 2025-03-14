@@ -15,6 +15,8 @@ void Command::FallBack()
 }
 
 Command::Command(const std::string & line_command)
+    : redirect_type(REDIRECT_TYPE::NONE)
+    , command("")
 {
     /*
     The type of quote signs.
@@ -26,13 +28,10 @@ Command::Command(const std::string & line_command)
 
     std::istringstream iss(line_command);
     std::string        argument("");
+    char               ch = 0;
+    int quote_type        = QUOTE_TYPE::NONE; /* Initialize with NONE. */
 
     arguments.clear(); /* Clear the arguments vector. */
-
-    char ch         = 0;
-    int  quote_type = QUOTE_TYPE::NONE; /* Initialize with NONE. */
-
-    command = ""; /* Initialize with empty string. */
 
     // Get the command.
     while (iss.get(ch))
@@ -143,6 +142,24 @@ Command::Command(const std::string & line_command)
     if (!argument.empty())
         arguments.push_back(argument);
 
+    auto redirect_sign = arguments.begin();
+
+    for (auto arg = arguments.begin(); arg != arguments.end(); arg++)
+    {
+        if (*arg == ">" || *arg == "1>")
+        {
+            redirect_type = REDIRECT_TYPE::STDOUT;
+            redirect_sign = arg;
+            redirect_to   = *(arg + 1);
+            break;
+        }
+    }
+
+    if (redirect_type != REDIRECT_TYPE::NONE && !IsExternalCommand())
+    {
+        arguments.erase(redirect_sign, arguments.end());
+    }
+
     arguments.push_back(""); /* Add an empty argument as the final argument. */
 }
 
@@ -150,15 +167,40 @@ Command::Command()
 {
     command = "";
     arguments.clear();
+    redirect_type = REDIRECT_TYPE::NONE;
+}
+
+Command::~Command()
+{
+    if (redirect_type != REDIRECT_TYPE::NONE)
+        std::cout.rdbuf(backup_stdout);
+}
+
+constexpr bool Command::IsExternalCommand() const
+{
+    return command_map.find(command) == command_map.end();
 }
 
 void Command::ExecCommand()
 {
+    bool is_external_command = IsExternalCommand();
+    if (redirect_type != REDIRECT_TYPE::NONE)
+    {
+        if (is_external_command)
+            redirect_type = REDIRECT_TYPE::NONE;
+        else
+        {
+            backup_stdout = std::cout.rdbuf();
+            redirect.open(redirect_to);
+            std::cout.rdbuf(redirect.rdbuf());
+        }
+    }
+
     /*
     If the command is built-in command, call the corresponding function.
     Otherwise, call the external function to execute the command.
     */
-    if (command_map.find(command) != command_map.end())
+    if (!is_external_command)
         command_map[command]();
     else
         command_map["external"]();

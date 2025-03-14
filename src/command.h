@@ -1,7 +1,9 @@
 #ifndef _COMMAND_H_
 #define _COMMAND_H_
 
+#include <fstream>
 #include <functional>
+#include <iostream>
 #include <string>
 #include <unordered_map>
 #include <vector>
@@ -9,9 +11,15 @@
 class Command
 {
 private:
+    enum REDIRECT_TYPE { NONE, STDOUT, STDERR, APPEND_STDOUT, APPEND_STDERR };
+
     const std::string        SPECIAL_CHARACTER_SET = "\"$\\\n";
     std::string              command;
     std::vector<std::string> arguments;
+    int                      redirect_type;
+    std::string              redirect_to;
+    std::streambuf *         backup_stdout;
+    std::ofstream            redirect;
     std::unordered_map<std::string, std::function<void()>> command_map = {
         {"exit", [this]() { exit(); }},
         {"echo", [this]() { echo(); }},
@@ -26,6 +34,9 @@ private:
 public:
     Command(const std::string & line_command);
     Command();
+    ~Command();
+
+    constexpr bool IsExternalCommand() const;
 
     /**
      *@brief Execute the command.
