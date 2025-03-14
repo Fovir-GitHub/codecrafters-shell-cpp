@@ -142,25 +142,21 @@ Command::Command(const std::string & line_command)
     if (!argument.empty())
         arguments.push_back(argument);
 
-    auto redirect_sign = arguments.begin();
+    auto redirect_sign = arguments.end();
 
-    for (auto arg = arguments.begin(); arg != arguments.end(); arg++)
+    for (auto arg = arguments.begin();
+         !IsExternalCommand() && arg != arguments.end(); arg++)
     {
-        if (REDIRECT_SIGNS.find(*arg) != std::string::npos)
+        if (REDIRECT_SIGNS.find(*arg) != std::string::npos &&
+            (redirect_type = GetRedirectType(*arg)) != REDIRECT_TYPE::NONE)
         {
-        }
-
-        if (*arg == ">" || *arg == "1>")
-        {
-            redirect_type = REDIRECT_TYPE::STDOUT;
             redirect_sign = arg;
             redirect_to   = *(arg + 1);
             break;
         }
     }
 
-    if (redirect_type != REDIRECT_TYPE::NONE && !IsExternalCommand())
-        arguments.erase(redirect_sign, arguments.end());
+    arguments.erase(redirect_sign, arguments.end());
 
     arguments.push_back(""); /* Add an empty argument as the final argument. */
 }
@@ -195,24 +191,18 @@ const int Command::GetRedirectType(const std::string & sign) const
 
 void Command::ExecCommand()
 {
-    bool is_external_command = IsExternalCommand();
     if (redirect_type != REDIRECT_TYPE::NONE)
     {
-        if (is_external_command)
-            redirect_type = REDIRECT_TYPE::NONE;
-        else
-        {
-            backup_stdout = std::cout.rdbuf();
-            redirect.open(redirect_to);
-            std::cout.rdbuf(redirect.rdbuf());
-        }
+        backup_stdout = std::cout.rdbuf();
+        redirect.open(redirect_to);
+        std::cout.rdbuf(redirect.rdbuf());
     }
 
     /*
     If the command is built-in command, call the corresponding function.
     Otherwise, call the external function to execute the command.
     */
-    if (!is_external_command)
+    if (!IsExternalCommand())
         command_map[command]();
     else
         command_map["external"]();
