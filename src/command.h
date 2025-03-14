@@ -13,14 +13,15 @@ class Command
 private:
     enum REDIRECT_TYPE { NONE, STDOUT, STDERR, APPEND_STDOUT, APPEND_STDERR };
 
-    const std::string        SPECIAL_CHARACTER_SET = "\"$\\\n";
-    const std::string        REDIRECT_SIGNS        = "1> > 2> >> 1>> 2>>";
-    std::string              command;
-    std::vector<std::string> arguments;
-    int                      redirect_type;
-    std::string              redirect_to;
-    std::streambuf *         backup_redirect;
-    std::ofstream            redirect;
+    const std::string SPECIAL_CHARACTER_SET = "\"$\\\n";
+    const std::string REDIRECT_SIGNS        = "1> > 2> >> 1>> 2>>";
+
+    std::string                                            command;
+    std::vector<std::string>                               arguments;
+    int                                                    redirect_type;
+    std::string                                            redirect_to;
+    std::streambuf *                                       backup_redirect;
+    std::ofstream                                          redirect;
     std::unordered_map<std::string, std::function<void()>> command_map = {
         {"exit", [this]() { exit(); }},
         {"echo", [this]() { echo(); }},
@@ -37,8 +38,21 @@ public:
     Command();
     ~Command();
 
+    /**
+     *@brief Judge whether the command is external command.
+     *
+     * @return true The command is external command.
+     * @return false The command is builtin command.
+     */
     constexpr bool IsExternalCommand() const;
-    const int      GetRedirectType(const std::string & sign) const;
+
+    /**
+     *@brief Get the redirect type.
+     *
+     * @param sign The sign of the redirect type.
+     * @return const int The type of redirect.
+     */
+    const int GetRedirectType(const std::string & sign) const;
 
     /**
      *@brief Execute the command.

@@ -142,21 +142,28 @@ Command::Command(const std::string & line_command)
     if (!argument.empty())
         arguments.push_back(argument);
 
-    auto redirect_sign = arguments.end();
+    // Get the position of the sign of redirection.
+    auto redirect_sign_position = arguments.end();
 
+    /*
+    If the command is external, skip this step.
+    And send the original command to `std::system()` function.
+    */
     for (auto arg = arguments.begin();
          !IsExternalCommand() && arg != arguments.end(); arg++)
     {
+        // Find the redirect sign and the sign is avaliable.
         if (REDIRECT_SIGNS.find(*arg) != std::string::npos &&
             (redirect_type = GetRedirectType(*arg)) != REDIRECT_TYPE::NONE)
         {
-            redirect_sign = arg;
-            redirect_to   = *(arg + 1);
+            redirect_sign_position = arg;        /* Record the position. */
+            redirect_to            = *(arg + 1); /* Get the redirect path. */
             break;
         }
     }
 
-    arguments.erase(redirect_sign, arguments.end());
+    // Remove the arguments after the redirect sign.
+    arguments.erase(redirect_sign_position, arguments.end());
 
     arguments.push_back(""); /* Add an empty argument as the final argument. */
 }
@@ -170,15 +177,18 @@ Command::Command()
 
 Command::~Command()
 {
+    // The command needs to be redirected.
     if (redirect_type != REDIRECT_TYPE::NONE)
     {
+        // The redirect type is stdout. Restore the stdout.
         if (redirect_type == REDIRECT_TYPE::STDOUT ||
             redirect_type == REDIRECT_TYPE::APPEND_STDOUT)
             std::cout.rdbuf(backup_redirect);
+        // The redirect type is stderr. Restore teh stderr.
         else
             std::cerr.rdbuf(backup_redirect);
 
-        redirect.close();
+        redirect.close(); /* Close the file. */
     }
 }
 
@@ -189,13 +199,13 @@ constexpr bool Command::IsExternalCommand() const
 
 const int Command::GetRedirectType(const std::string & sign) const
 {
-    if (sign == "1>" || sign == ">")
+    if (sign == "1>" || sign == ">") /* Stdout */
         return REDIRECT_TYPE::STDOUT;
-    else if (sign == "2>")
+    else if (sign == "2>") /* Stderr */
         return REDIRECT_TYPE::STDERR;
-    else if (sign == ">>" || sign == "1>>")
+    else if (sign == ">>" || sign == "1>>") /* Append stdout */
         return REDIRECT_TYPE::APPEND_STDOUT;
-    else if (sign == "2>>")
+    else if (sign == "2>>") /* Append stderr */
         return REDIRECT_TYPE::APPEND_STDERR;
     else
         return REDIRECT_TYPE::NONE;
@@ -203,18 +213,24 @@ const int Command::GetRedirectType(const std::string & sign) const
 
 void Command::ExecCommand()
 {
+    // Handle the redirection.
     if (redirect_type != REDIRECT_TYPE::NONE)
     {
         bool redirect_stdout = (redirect_type == REDIRECT_TYPE::STDOUT ||
                                 redirect_type == REDIRECT_TYPE::APPEND_STDOUT);
+
+        // Backup the original output stream.
         backup_redirect =
             (redirect_stdout ? std::cout.rdbuf() : std::cerr.rdbuf());
+
+        // Open the redirect file.
         redirect.open(redirect_to,
                       (redirect_type == REDIRECT_TYPE::APPEND_STDOUT ||
                        redirect_type == REDIRECT_TYPE::APPEND_STDERR)
                           ? std::ios::app
                           : std::ios::out);
 
+        // Redirect stdout or stderr.
         if (redirect_stdout)
             std::cout.rdbuf(redirect.rdbuf());
         else
