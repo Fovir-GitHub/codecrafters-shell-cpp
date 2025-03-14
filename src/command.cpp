@@ -171,7 +171,15 @@ Command::Command()
 Command::~Command()
 {
     if (redirect_type != REDIRECT_TYPE::NONE)
-        std::cout.rdbuf(backup_redirect);
+    {
+        if (redirect_type == REDIRECT_TYPE::STDOUT ||
+            redirect_type == REDIRECT_TYPE::APPEND_STDOUT)
+            std::cout.rdbuf(backup_redirect);
+        else
+            std::cerr.rdbuf(backup_redirect);
+
+        redirect.close();
+    }
 }
 
 constexpr bool Command::IsExternalCommand() const
@@ -193,9 +201,20 @@ void Command::ExecCommand()
 {
     if (redirect_type != REDIRECT_TYPE::NONE)
     {
-        backup_redirect = std::cout.rdbuf();
-        redirect.open(redirect_to);
-        std::cout.rdbuf(redirect.rdbuf());
+        bool redirect_stdout = (redirect_type == REDIRECT_TYPE::STDOUT ||
+                                redirect_type == REDIRECT_TYPE::APPEND_STDOUT);
+        backup_redirect =
+            (redirect_stdout ? std::cout.rdbuf() : std::cerr.rdbuf());
+        redirect.open(redirect_to,
+                      (redirect_type == REDIRECT_TYPE::APPEND_STDOUT ||
+                       redirect_type == REDIRECT_TYPE::APPEND_STDERR)
+                          ? std::ios::app
+                          : std::ios::out);
+
+        if (redirect_stdout)
+            std::cout.rdbuf(redirect.rdbuf());
+        else
+            std::cerr.rdbuf(redirect.rdbuf());
     }
 
     /*
