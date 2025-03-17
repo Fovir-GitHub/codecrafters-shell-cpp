@@ -15,7 +15,6 @@ class CommandBase
 {
 private:
     std::vector<std::string> arguments;
-    std::string              command;
 
 public:
     CommandBase() {}
