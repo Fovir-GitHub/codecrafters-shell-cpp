@@ -25,11 +25,31 @@ public:
     Shell();
     ~Shell() {}
 
+    /**
+     *@brief Run the shell
+     */
     void ExecuteShell();
 
+    /**
+     *@brief Get the environment variable
+     *
+     * @param env_name The name of the environment variable
+     * @return std::string The environment variable
+     */
     std::string GetEnvironmentVariable(std::string env_name);
-    void        ConstructCommandList();
 
+    /**
+     *@brief Construct the `command_list`
+     */
+    void ConstructCommandList();
+
+    /**
+     * @brief Split string by given character
+     *
+     * @param original_string The string to split
+     * @param sign The sign to split
+     * @return std::vector<std::string> The result of small part string
+     */
     std::vector<std::string> SplitString(std::string original_string,
                                          char        sign);
 };
