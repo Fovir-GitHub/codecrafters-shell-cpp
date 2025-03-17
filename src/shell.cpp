@@ -6,15 +6,14 @@ namespace fs = std::filesystem;
 Shell::Shell()
 {
     ConstructCommandList();
-
-    // Construct command_list and overwrite the external command
-    for (const auto & [key, value] : builtin_commands)
-        command_list[key] = BUILTIN_COMMAND_STRING;
 }
 
 void Shell::ExecuteShell()
 {
-    while (true) std::cout << "$ ";
+    while (true)
+    {
+        std::cout << "$ ";
+    }
 }
 
 std::string Shell::GetEnvironmentVariable(std::string env_name)
@@ -32,6 +31,10 @@ void Shell::ConstructCommandList()
             for (const auto & entry : fs::directory_iterator(env_path))
                 command_list.insert({entry.path().filename().string(),
                                      fs::absolute(entry.path()).string()});
+
+    // Construct command_list and overwrite the external command
+    for (const auto & [key, value] : builtin_commands)
+        command_list[key] = BUILTIN_COMMAND_STRING;
 
     return;
 }
