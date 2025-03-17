@@ -28,7 +28,7 @@ public:
 class Echo : public CommandBase
 {
 public:
-    Echo();
+    Echo() {}
     void Exec();
 };
 
