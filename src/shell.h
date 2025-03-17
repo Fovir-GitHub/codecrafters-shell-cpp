@@ -26,6 +26,12 @@ public:
     ~Shell() {}
 
     void ExecuteShell();
+
+    std::string GetEnvironmentVariable(std::string env_name);
+    void        ConstructCommandList();
+
+    std::vector<std::string> SplitString(std::string original_string,
+                                         char        sign);
 };
 
 #endif // !_SHELL_H_
