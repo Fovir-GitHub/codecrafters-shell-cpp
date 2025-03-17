@@ -12,7 +12,8 @@
 class Shell
 {
 private:
-    std::string                                             input_line = "";
+    const std::string BUILTIN_COMMAND_STRING = "builtin";
+    std::string       input_line             = "";
     std::unordered_map<std::string, commmands::CommandBase> builtin_commands = {
         {"echo", commmands::Echo()},
     };
