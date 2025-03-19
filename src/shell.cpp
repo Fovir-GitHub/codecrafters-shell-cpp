@@ -6,6 +6,9 @@ namespace fs = std::filesystem;
 Shell::Shell()
 {
     ConstructCommandList();
+
+    // Construct the `completion_tree`
+    for (const auto & [cmd, path] : command_list) completion_tree.Insert(cmd);
 }
 
 void Shell::ExecuteShell()
