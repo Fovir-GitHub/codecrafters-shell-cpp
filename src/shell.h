@@ -2,6 +2,7 @@
 #define _SHELL_H_
 
 #include "command.h"
+#include "trie.h"
 #include <cstdlib>
 #include <filesystem>
 #include <iostream>
@@ -17,6 +18,8 @@ private:
     std::unordered_map<std::string, commmands::CommandBase> builtin_commands = {
         {"echo", commmands::Echo()},
     };
+
+    Trie completion_tree;
 
 protected:
     std::unordered_map<std::string, std::string> command_list;
