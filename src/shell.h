@@ -55,6 +55,10 @@ public:
      */
     std::vector<std::string> SplitString(std::string original_string,
                                          char        sign);
+
+    void SetInputMode();
+
+    void ResetInputMode();
 };
 
 #endif // !_SHELL_H_

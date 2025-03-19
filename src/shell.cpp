@@ -1,5 +1,6 @@
 #include "shell.h"
 #include <sstream>
+#include <termios.h>
 
 namespace fs = std::filesystem;
 
@@ -16,6 +17,7 @@ void Shell::ExecuteShell()
     while (true)
     {
         std::cout << "$ ";
+        builtin_commands["echo"];
     }
 }
 
@@ -52,4 +54,24 @@ std::vector<std::string> Shell::SplitString(std::string original_string,
     while (std::getline(iss, token, sign)) result.push_back(token);
 
     return result;
+}
+
+void Shell::SetInputMode()
+{
+    termios t;
+    tcgetattr(STDIN_FILENO, &t);
+    t.c_lflag &= ~(ICANON | ECHO);
+    t.c_cc[VMIN]  = 1;
+    t.c_cc[VTIME] = 0;
+    tcsetattr(STDIN_FILENO, TCSANOW, &t);
+
+    return;
+}
+
+void Shell::ResetInputMode()
+{
+    termios t;
+    tcgetattr(STDIN_FILENO, &t);
+    t.c_lflag |= (ICANON | ECHO);
+    tcsetattr(STDIN_FILENO, TCSANOW, &t);
 }
