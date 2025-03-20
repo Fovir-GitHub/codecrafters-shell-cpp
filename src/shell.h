@@ -15,8 +15,11 @@ class Shell
 private:
     const std::string BUILTIN_COMMAND_STRING = "builtin";
     std::string       input_line             = "";
-    std::unordered_map<std::string, commmands::CommandBase> builtin_commands = {
-        {"echo", commmands::Echo()},
+    std::string       cmd                    = "";
+
+    std::unordered_map<std::string, std::shared_ptr<commands::CommandBase>>
+        builtin_commands = {
+            {"echo", std::make_shared<commands::Echo>()},
     };
 
     Trie completion_tree;
@@ -45,12 +48,18 @@ private:
      */
     void HandleCompletion(bool previous_is_tab);
 
-protected:
     std::unordered_map<std::string, std::string> command_list;
 
 public:
     Shell();
     ~Shell() {}
+
+    const std::unordered_map<std::string, std::string> & GetCommandList() const
+    {
+        return command_list;
+    }
+
+    std::string GetInputLine() const { return input_line; }
 
     /**
      *@brief Run the shell

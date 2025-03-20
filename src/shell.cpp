@@ -1,4 +1,5 @@
 #include "shell.h"
+#include "tools.h"
 #include <sstream>
 #include <termios.h>
 
@@ -17,8 +18,19 @@ void Shell::ExecuteShell()
     while (true)
     {
         std::cout << "$ ";
-        GetInput();
-        std::cout << input_line << '\n';
+        GetInput(); /* Get the user's input */
+
+        // The command exists
+        if (command_list.find(cmd) != command_list.end())
+        {
+            // The command is built-in command
+            if (command_list[cmd] == BUILTIN_COMMAND_STRING)
+                builtin_commands[cmd]->Exec(std::make_shared<Shell>(*this));
+            else /* Execute the original command */
+                std::system((cmd + " " + input_line).c_str());
+        }
+        else /* The command does not exist */
+            std::cout << cmd << ": command not found\n";
     }
 }
 
@@ -106,7 +118,10 @@ void Shell::GetInput()
     {
         std::cin.get(ch); /* Get a character */
         if (ch == '\n')   /* If it is the newline, then break */
+        {
+            std::cout << '\n';
             break;
+        }
         else if (ch == 127) /* The backspace */
         {
             if (!input_line.empty())
@@ -130,6 +145,39 @@ void Shell::GetInput()
     }
 
     ResetInputMode();
+
+    // Get the cmd
+    cmd.clear();
+    std::string::iterator cmd_begin = input_line.begin(),
+                          cmd_end   = input_line.end();
+
+    // Find the first visible character
+    for (; !std::isgraph(*cmd_begin); cmd_begin++);
+
+    // If the command is in the quote signs
+    if ((*cmd_begin) == '\'' || (*cmd_begin) == '\"')
+    {
+        // Store the quote sign
+        char quote_sign = (*cmd_begin);
+
+        // Find until meet the same quote sign
+        for (cmd_end = cmd_begin + 1;
+             cmd_end != input_line.end() && *cmd_end != quote_sign; cmd_end++);
+
+        // Point cmd_end to the next position
+        cmd_end++;
+    }
+    else
+        // Find until the first invisible character
+        for (cmd_end = cmd_begin;
+             cmd_end != input_line.end() && std::isgraph(*cmd_end); cmd_end++);
+
+    cmd = std::string(cmd_begin, cmd_end); /* Copy to cmd */
+    cmd = removeQuoteSigns(cmd);           /* Remove the quote sign */
+
+    // Remove the command from the input_line
+    input_line.erase(input_line.begin(), cmd_end);
+
     return;
 }
 
