@@ -165,3 +165,22 @@ void commands::Exit::Exec(std::shared_ptr<Shell> sh)
     // Exit the program
     std::exit(exit_code);
 }
+
+void commands::Type::Exec(std::shared_ptr<Shell> sh)
+{
+    SetArguments(sh->GetInputLine());
+
+    std::unordered_map<std::string, std::string> command_list =
+        sh->GetCommandList();
+    std::string cmd = GetArguments()[0];
+
+    if (!sh->CommandExist(cmd))
+        std::cout << cmd << ": not found" << '\n';
+    else
+        std::cout << cmd << " is "
+                  << (sh->IsBuiltin(cmd) ? "a shell builtin"
+                                         : command_list[cmd])
+                  << '\n';
+
+    return;
+}
