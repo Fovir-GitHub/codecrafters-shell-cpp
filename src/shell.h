@@ -21,6 +21,7 @@ private:
         builtin_commands = {
             {"echo", std::make_shared<commands::Echo>()},
             {"exit", std::make_shared<commands::Exit>()},
+            {"type", std::make_shared<commands::Type>()},
     };
 
     Trie completion_tree;
@@ -59,6 +60,9 @@ public:
     {
         return command_list;
     }
+
+    bool CommandExist(std::string cmd);
+    bool IsBuiltin(std::string cmd);
 
     std::string GetInputLine() const { return input_line; }
 
