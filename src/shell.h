@@ -20,6 +20,7 @@ private:
     std::unordered_map<std::string, std::shared_ptr<commands::CommandBase>>
         builtin_commands = {
             {"echo", std::make_shared<commands::Echo>()},
+            {"exit", std::make_shared<commands::Exit>()},
     };
 
     Trie completion_tree;

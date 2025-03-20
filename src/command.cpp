@@ -151,3 +151,17 @@ void commands::Echo::Exec(std::shared_ptr<Shell> sh)
 
     return;
 }
+
+void commands::Exit::Exec(std::shared_ptr<Shell> sh)
+{
+    SetArguments(sh->GetInputLine());
+
+    int exit_code = 0;
+
+    // Set the exit code
+    if (!GetArguments().empty())
+        exit_code = std::atoi(GetArguments()[0].c_str());
+
+    // Exit the program
+    std::exit(exit_code);
+}
