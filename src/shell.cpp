@@ -34,7 +34,7 @@ void Shell::ExecuteShell()
         GetInput(); /* Get the user's input */
 
         // The command exists
-        if (command_list.find(cmd) != command_list.end())
+        if (CommandExist(cmd))
         {
             // The command is built-in command
             if (command_list[cmd] == BUILTIN_COMMAND_STRING)
