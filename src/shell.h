@@ -41,9 +41,9 @@ private:
 
     /**
      * @brief Handle the completion process
-     *
+     * @param previous_is_tab determine whether the previous character is tab
      */
-    void HandleCompletion();
+    void HandleCompletion(bool previous_is_tab);
 
 protected:
     std::unordered_map<std::string, std::string> command_list;

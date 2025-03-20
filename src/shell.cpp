@@ -99,7 +99,9 @@ void Shell::GetInput()
     SetInputMode();
     input_line.clear(); /* Clear the input line */
 
-    char ch = 0;
+    char ch              = 0;
+    bool previous_is_tab = false;
+
     while (true)
     {
         std::cin.get(ch); /* Get a character */
@@ -117,19 +119,21 @@ void Shell::GetInput()
             }
         }
         else if (ch == '\t') /* The tab to complete commands */
-            HandleCompletion();
+            HandleCompletion(previous_is_tab);
         else /* Normal characters */
         {
             input_line.push_back(ch); /* Add to the input line */
             std::cout << ch;          /* Output it */
         }
+
+        previous_is_tab = (ch == '\t'); /* Update previous_is_tab */
     }
 
     ResetInputMode();
     return;
 }
 
-void Shell::HandleCompletion()
+void Shell::HandleCompletion(bool previous_is_tab)
 {
     std::string           command_part; /* The command in input line */
     std::string::iterator begin_command_part = input_line.begin(),
@@ -165,6 +169,18 @@ void Shell::HandleCompletion()
     // Clear the output and output the result of completion
     while (original_length--) std::cout << "\b \b";
     std::cout << input_line;
+
+    /**
+     * If the user inputs double tabs,
+     * then output all possible commands
+     */
+    if (previous_is_tab)
+    {
+        std::cout << '\n';
+        for (const std::string & possible_command : possible_strings)
+            std::cout << possible_command << ' ';
+        std::cout << "\n$ " << input_line;
+    }
 
     return;
 }
