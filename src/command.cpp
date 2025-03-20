@@ -195,3 +195,28 @@ void commands::Pwd::Exec(std::shared_ptr<Shell> sh)
     std::cout << fs::current_path().string() << '\n';
     return;
 }
+
+void commands::Cd::Exec(std::shared_ptr<Shell> sh)
+{
+    SetArguments(sh->GetInputLine());
+
+    std::string home_path = sh->GetEnvironmentVariable("HOME");
+    if (GetArguments().empty())
+    {
+        fs::current_path(home_path);
+        return;
+    }
+
+    std::string target_path        = GetArguments()[0];
+    size_t      home_sign_position = 0;
+    while ((home_sign_position = target_path.find("~")) != std::string::npos)
+        target_path.replace(home_sign_position, 1, home_path);
+
+    if (!fs::exists(target_path))
+        std::cout << "cd: " << GetArguments()[0]
+                  << ": No such file or directory\n";
+    else
+        fs::current_path(target_path);
+
+    return;
+}

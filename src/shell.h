@@ -23,6 +23,7 @@ private:
             {"exit", std::make_shared<commands::Exit>()},
             {"type", std::make_shared<commands::Type>()},
             {"pwd", std::make_shared<commands::Pwd>()},
+            {"cd", std::make_shared<commands::Cd>()},
     };
 
     Trie completion_tree;
