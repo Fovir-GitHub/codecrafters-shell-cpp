@@ -158,9 +158,12 @@ void Shell::HandleCompletion(bool previous_is_tab)
     std::vector<std::string> possible_strings =
         completion_tree.FindPossibleStringByPrefix(command_part);
 
-    // There is no possible strings, exit this function
-    if (possible_strings.size() == 0)
+    // There is no possible strings, ring the bell and exit this function
+    if (possible_strings.empty())
+    {
+        std::cout << '\a';
         return;
+    }
 
     // Replace the command part
     input_line.replace(begin_command_part, end_command_part,
