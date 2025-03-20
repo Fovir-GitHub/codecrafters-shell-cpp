@@ -21,6 +21,30 @@ private:
 
     Trie completion_tree;
 
+    /**
+     *@brief Set the input mode
+     */
+    void SetInputMode();
+
+    /**
+     *@brief Reset the input mode
+     */
+    void ResetInputMode();
+
+    /**
+     * @brief Get the common prefix of a group of strings
+     *
+     * @param possible_strings the group of strings
+     * @return std::string the common prefix
+     */
+    std::string GetCommonPrefix(std::vector<std::string> & possible_strings);
+
+    /**
+     * @brief Handle the completion process
+     *
+     */
+    void HandleCompletion();
+
 protected:
     std::unordered_map<std::string, std::string> command_list;
 
@@ -56,9 +80,10 @@ public:
     std::vector<std::string> SplitString(std::string original_string,
                                          char        sign);
 
-    void SetInputMode();
-
-    void ResetInputMode();
+    /**
+     *@brief Get input with completion from the user
+     */
+    void GetInput();
 };
 
 #endif // !_SHELL_H_

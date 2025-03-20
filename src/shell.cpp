@@ -17,7 +17,8 @@ void Shell::ExecuteShell()
     while (true)
     {
         std::cout << "$ ";
-        builtin_commands["echo"];
+        GetInput();
+        std::cout << input_line << '\n';
     }
 }
 
@@ -74,4 +75,96 @@ void Shell::ResetInputMode()
     tcgetattr(STDIN_FILENO, &t);
     t.c_lflag |= (ICANON | ECHO);
     tcsetattr(STDIN_FILENO, TCSANOW, &t);
+}
+
+std::string Shell::GetCommonPrefix(std::vector<std::string> & possible_strings)
+{
+    // Sort the vector at first in dictionary order
+    std::sort(possible_strings.begin(), possible_strings.end());
+
+    // Get the first and last elements, which are most different
+    const std::string & first = possible_strings.front();
+    const std::string & last  = possible_strings.back();
+
+    // Find the first i same character position
+    size_t i = 0;
+    while (i < first.length() && i < last.length() && first[i] == last[i]) i++;
+
+    // Return the substr
+    return first.substr(0, i);
+}
+
+void Shell::GetInput()
+{
+    SetInputMode();
+    input_line.clear(); /* Clear the input line */
+
+    char ch = 0;
+    while (true)
+    {
+        std::cin.get(ch); /* Get a character */
+        if (ch == '\n')   /* If it is the newline, then break */
+            break;
+        else if (ch == 127) /* The backspace */
+        {
+            if (!input_line.empty())
+            {
+                // Remove the last character
+                input_line.pop_back();
+
+                // Perform backspace
+                std::cout << "\b \b";
+            }
+        }
+        else if (ch == '\t') /* The tab to complete commands */
+            HandleCompletion();
+        else /* Normal characters */
+        {
+            input_line.push_back(ch); /* Add to the input line */
+            std::cout << ch;          /* Output it */
+        }
+    }
+
+    ResetInputMode();
+    return;
+}
+
+void Shell::HandleCompletion()
+{
+    std::string           command_part; /* The command in input line */
+    std::string::iterator begin_command_part = input_line.begin(),
+                          end_command_part   = input_line.end();
+    int original_length                      = input_line.length();
+
+    // Find the first visible character position
+    for (; !std::isgraph(*begin_command_part); begin_command_part++);
+
+    /**
+     * Find the first space from the beign_command_part
+     * and record it as the end of command part
+     */
+    for (end_command_part = begin_command_part;
+         end_command_part != input_line.end() && *end_command_part != ' ';
+         end_command_part++);
+
+    // Assign the command part
+    command_part = std::string(begin_command_part, end_command_part);
+
+    // Find all possible strings
+    std::vector<std::string> possible_strings =
+        completion_tree.FindPossibleStringByPrefix(command_part);
+
+    // There is no possible strings, exit this function
+    if (possible_strings.size() == 0)
+        return;
+
+    // Replace the command part
+    input_line.replace(begin_command_part, end_command_part,
+                       GetCommonPrefix(possible_strings));
+
+    // Clear the output and output the result of completion
+    while (original_length--) std::cout << "\b \b";
+    std::cout << input_line;
+
+    return;
 }
