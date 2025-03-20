@@ -2,9 +2,12 @@
 #include "shell.h"
 #include "tools.h"
 #include <cctype>
+#include <filesystem>
 #include <functional>
 #include <iostream>
 #include <sstream>
+
+namespace fs = std::filesystem;
 
 std::string commands::CommandBase::HandleSingleQuote(std::istringstream & iss)
 {
@@ -182,5 +185,13 @@ void commands::Type::Exec(std::shared_ptr<Shell> sh)
                                          : command_list[cmd])
                   << '\n';
 
+    return;
+}
+
+void commands::Pwd::Exec(std::shared_ptr<Shell> sh)
+{
+    SetArguments(sh->GetInputLine());
+
+    std::cout << fs::current_path().string() << '\n';
     return;
 }

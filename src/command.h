@@ -66,6 +66,14 @@ public:
     void Exec(std::shared_ptr<Shell> sh) override;
 };
 
+class Pwd : public CommandBase
+{
+public:
+    Pwd() = default;
+
+    void Exec(std::shared_ptr<Shell> sh) override;
+};
+
 COMMANDS_NAMESPACE_END
 
 #endif // !_COMMAND_H_
