@@ -112,8 +112,21 @@ void Shell::ConstructCommandList()
     for (const auto & env_path : environment_variable_path)
         if (fs::exists(env_path) && fs::is_directory(env_path))
             for (const auto & entry : fs::directory_iterator(env_path))
-                command_list.insert({entry.path().filename().string(),
-                                     fs::absolute(entry.path()).string()});
+            {
+                std::string file_name = entry.path().filename().string();
+                std::string original_file_name = file_name;
+                if (file_name.find(' ') != std::string::npos)
+                {
+                    if (file_name.find('\"') != std::string::npos)
+                        file_name = '\'' + file_name + '\'';
+                    else
+                        file_name = '\"' + file_name + '\"';
+                }
+                command_list.insert({original_file_name,
+                                     entry.path().string() + "/" + file_name});
+                // command_list.insert({entry.path().filename().string(),
+                //                      fs::absolute(entry.path()).string()});
+            }
 
     // Construct command_list and overwrite the external command
     for (const auto & [key, value] : builtin_commands)
