@@ -121,6 +121,7 @@ void Shell::ConstructCommandList()
                         file_name = '\'' + file_name + '\'';
                     else
                         file_name = '\"' + file_name + '\"';
+                    std::cout << "file_name: " << file_name << '\n';
                 }
                 command_list.insert({file_name, entry.path().string()});
                 // command_list.insert({entry.path().filename().string(),
