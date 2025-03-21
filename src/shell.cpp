@@ -1,5 +1,6 @@
 #include "shell.h"
 #include "tools.h"
+#include <fstream>
 #include <sstream>
 #include <termios.h>
 
@@ -28,10 +29,46 @@ bool Shell::IsBuiltin(std::string cmd)
 
 void Shell::ExecuteShell()
 {
+    // Help to get the redirect type
+    commands::CommandBase get_redirect_type_helper;
     while (true)
     {
         std::cout << "$ ";
         GetInput(); /* Get the user's input */
+
+        // Get the redirect information
+        std::pair<int, std::string> redirect_information =
+            get_redirect_type_helper.SetArguments(input_line);
+        std::streambuf * backup_buffer; /* Backup the stdout or stderr */
+        std::ofstream    fout;          /* To open file */
+
+        if (redirect_information.first != REDIRECT_TYPE::STDOUT)
+        {
+            // Backup the buffer of stdout or stderr
+            backup_buffer =
+                ((redirect_information.first == REDIRECT_TYPE::STDOUT_TO_FILE ||
+                  redirect_information.first ==
+                      REDIRECT_TYPE::APPEND_STDOUT_TO_FILE)
+                     ? std::cout.rdbuf()
+                     : std::cerr.rdbuf());
+
+            // Open the file with different mode
+            fout.open(redirect_information.second,
+                      (redirect_information.first ==
+                           REDIRECT_TYPE::APPEND_STDOUT_TO_FILE ||
+                       redirect_information.first ==
+                           REDIRECT_TYPE::APPEND_STDERR_TO_FILE)
+                          ? std::ios::app
+                          : std::ios::out);
+
+            // Let stdout or stderr use the buffer of fout
+            if (redirect_information.first == REDIRECT_TYPE::STDOUT_TO_FILE ||
+                redirect_information.first ==
+                    REDIRECT_TYPE::APPEND_STDOUT_TO_FILE)
+                std::cout.rdbuf(fout.rdbuf());
+            else
+                std::cerr.rdbuf(fout.rdbuf());
+        }
 
         // The command exists
         if (CommandExist(cmd))
@@ -44,6 +81,20 @@ void Shell::ExecuteShell()
         }
         else /* The command does not exist */
             std::cout << cmd << ": command not found\n";
+
+        // Reset the redirect type
+        if (redirect_information.first != REDIRECT_TYPE::STDOUT)
+        {
+            if (redirect_information.first == REDIRECT_TYPE::STDOUT_TO_FILE ||
+                redirect_information.first ==
+                    REDIRECT_TYPE::APPEND_STDOUT_TO_FILE)
+                std::cout.rdbuf(backup_buffer);
+            else
+                std::cerr.rdbuf(backup_buffer);
+
+            // Close the file
+            fout.close();
+        }
     }
 }
 

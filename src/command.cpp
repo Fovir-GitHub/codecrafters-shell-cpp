@@ -87,7 +87,8 @@ char commands::CommandBase::HandleBackSlash(std::istringstream & iss,
     return result;
 }
 
-void commands::CommandBase::SetArguments(const std::string & command_line)
+std::pair<int, std::string>
+commands::CommandBase::SetArguments(const std::string & command_line)
 {
     // Declare the type of quote signs
     enum QUOTE_TYPE { NONE, SINGLE, DOUBLE };
@@ -137,7 +138,40 @@ void commands::CommandBase::SetArguments(const std::string & command_line)
     if (!arg.empty())
         arguments.push_back(arg);
 
-    return;
+    // Determine the type of redirection and remove the redirect path
+    const static std::string REDIRECT_SIGNS = "> 1> >> 1>> 2> 2>>";
+    int                      redirect_type  = REDIRECT_TYPE::STDOUT;
+
+    // File path to redirect
+    std::string                        redirect_to("");
+    std::vector<std::string>::iterator iter = arguments.begin();
+
+    // Find the redirect sign
+    for (; iter != arguments.end(); iter++)
+        if (REDIRECT_SIGNS.find(*iter) != std::string::npos)
+        {
+            if (*iter == ">" || *iter == "1>")
+                redirect_type = REDIRECT_TYPE::STDOUT_TO_FILE;
+            else if (*iter == ">>" || *iter == "1>>")
+                redirect_type = REDIRECT_TYPE::APPEND_STDOUT_TO_FILE;
+            else if (*iter == "2>")
+                redirect_type = REDIRECT_TYPE::STDERR_TO_FILE;
+            else if (*iter == "2>>")
+                redirect_type = REDIRECT_TYPE::APPEND_STDERR_TO_FILE;
+            else
+                continue;
+
+            break;
+        }
+
+    // Set the redirect path
+    if (redirect_type != REDIRECT_TYPE::STDOUT)
+        redirect_to = *(iter + 1);
+
+    // Remove the arguments after the redirect sign
+    arguments.erase(iter, arguments.end());
+
+    return {redirect_type, redirect_to};
 }
 
 void commands::Echo::Exec(std::shared_ptr<Shell> sh)

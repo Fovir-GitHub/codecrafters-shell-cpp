@@ -11,6 +11,14 @@
     {
 #define COMMANDS_NAMESPACE_END }
 
+enum REDIRECT_TYPE {
+    STDOUT,
+    STDOUT_TO_FILE,
+    APPEND_STDOUT_TO_FILE,
+    STDERR_TO_FILE,
+    APPEND_STDERR_TO_FILE
+};
+
 class Shell;
 
 COMMANDS_NAMESPACE_BEGIN
@@ -25,7 +33,6 @@ private:
     std::string HandleDoubleQuote(std::istringstream & iss);
     char        HandleBackSlash(std::istringstream & iss, bool in_double_quote);
 
-
 public:
     CommandBase() {}
     ~CommandBase() {}
@@ -34,12 +41,13 @@ public:
      *@brief Set the arguments vector
      *
      * @param command_line the line of arguments
+     * @return the redirect type
      */
-    void SetArguments(const std::string & command_line);
+    std::pair<int, std::string> SetArguments(const std::string & command_line);
 
     const std::vector<std::string> & GetArguments() const { return arguments; }
 
-    virtual void Exec(std::shared_ptr<Shell>) = 0;
+    virtual void Exec(std::shared_ptr<Shell>) {}
 };
 
 class Echo : public CommandBase
