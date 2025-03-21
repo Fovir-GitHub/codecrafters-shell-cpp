@@ -27,9 +27,9 @@ std::string commands::CommandBase::HandleSingleQuote(std::istringstream & iss)
                 break;
             }
         }
-
-        // Treat all other characters as normal characters
-        arg.push_back(ch);
+        else
+            // Treat all other characters as normal characters
+            arg.push_back(ch);
     }
 
     return arg;
