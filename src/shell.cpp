@@ -1,5 +1,6 @@
 #include "shell.h"
 #include "tools.h"
+#include <algorithm>
 #include <fstream>
 #include <sstream>
 #include <termios.h>
