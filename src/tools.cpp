@@ -17,3 +17,16 @@ std::string removeQuoteSigns(std::string s)
     return (s.front() == '\"' || s.front() == '\'') ? s.substr(1, s.size() - 2)
                                                     : s;
 }
+
+std::string addQuoteSigns(std::string s)
+{
+    if (s.find(' ') != std::string::npos)
+    {
+        if (s.find('\"') != std::string::npos)
+            s = "\'" + s + "\'";
+        else
+            s = "\"" + s + "\"";
+    }
+
+    return s;
+}

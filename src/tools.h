@@ -11,4 +11,6 @@
  */
 std::string removeQuoteSigns(std::string s);
 
+std::string addQuoteSigns(std::string s);
+
 #endif // !_TOOLS_H_
