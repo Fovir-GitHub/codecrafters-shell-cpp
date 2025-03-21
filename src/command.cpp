@@ -39,16 +39,24 @@ std::string commands::CommandBase::HandleDoubleQuote(std::istringstream & iss)
 {
     std::string arg("\""); /* Initialize with double quote sign */
     char        ch;
+    bool        in_double_quote = true;
 
     while (iss.get(ch))
     {
         if (ch == '\\') /* The character is backslash */
-            arg.push_back(HandleBackSlash(iss, true));
+            arg.push_back(HandleBackSlash(iss, in_double_quote));
         else if (ch == '\"') /* Meet another double quote sign */
         {
             // The next character is also double quote sign, skip it
             if (iss.peek() == '\"')
                 iss.get();
+            else if (std::isgraph(iss.peek()))
+            {
+                iss.get(ch);
+                arg.push_back(ch);
+                arg.erase(arg.begin());
+                in_double_quote = false;
+            }
             else /* Meet the close double quote sign */
             {
                 arg.push_back(ch);
