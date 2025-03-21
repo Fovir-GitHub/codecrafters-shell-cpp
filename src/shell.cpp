@@ -80,21 +80,7 @@ void Shell::ExecuteShell()
             if (command_list[cmd] == BUILTIN_COMMAND_STRING)
                 builtin_commands[cmd]->Exec(std::make_shared<Shell>(*this));
             else /* Execute the original command */
-                 // std::system((cmd + " " + input_line).c_str());
-            {
-                // std::cout << (((cmd.find(' ') != std::string::npos)
-                //                    ? (std::quoted(cmd)._M_string)
-                //                    : cmd) +
-                //               " " + input_line)
-                //                  .c_str()
-                //           << '\n';
-                // std::system((((cmd.find(' ') != std::string::npos)
-                //                   ? (std::quoted(cmd)._M_string)
-                //                   : cmd) +
-                //              " " + input_line)
-                //                 .c_str());
                 std::system((addQuoteSigns(cmd) + " " + input_line).c_str());
-            }
         }
         else /* The command does not exist */
             std::cout << cmd << ": command not found\n";
