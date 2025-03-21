@@ -287,7 +287,7 @@ void Shell::HandleCompletion(bool previous_is_tab)
     bool only_one_match = (possible_strings.size() == 1);
 
     // There is no possible strings, ring the bell and exit this function
-    if (possible_strings.empty())
+    if (possible_strings.empty() || !only_one_match)
     {
         std::cout << '\a';
         return;
