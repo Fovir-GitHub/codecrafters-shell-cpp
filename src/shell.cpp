@@ -238,7 +238,7 @@ void Shell::GetInput()
              cmd_end != input_line.end() && std::isgraph(*cmd_end); cmd_end++);
 
     cmd = std::string(cmd_begin, cmd_end); /* Copy to cmd */
-    cmd = removeQuoteSigns(cmd);           /* Remove the quote sign */
+    // cmd = removeQuoteSigns(cmd);           /* Remove the quote sign */
 
     // Remove the command from the input_line
     input_line.erase(input_line.begin(), cmd_end);
