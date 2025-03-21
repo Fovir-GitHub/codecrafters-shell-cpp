@@ -290,7 +290,8 @@ void Shell::HandleCompletion(bool previous_is_tab)
     if (possible_strings.empty() || !only_one_match)
     {
         std::cout << '\a';
-        return;
+        if (possible_strings.empty())
+            return;
     }
 
     // Replace the command part
