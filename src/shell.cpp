@@ -122,8 +122,7 @@ void Shell::ConstructCommandList()
                     else
                         file_name = '\"' + file_name + '\"';
                 }
-                command_list.insert({original_file_name,
-                                     entry.path().string() + "/" + file_name});
+                command_list.insert({file_name, entry.path().string()});
                 // command_list.insert({entry.path().filename().string(),
                 //                      fs::absolute(entry.path()).string()});
             }
