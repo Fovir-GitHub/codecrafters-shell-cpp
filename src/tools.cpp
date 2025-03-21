@@ -20,11 +20,13 @@ std::string removeQuoteSigns(std::string s)
 
 std::string addQuoteSigns(std::string s)
 {
+    // If there is space
     if (s.find(' ') != std::string::npos)
     {
+        // If there is double quote inside, then add single quote
         if (s.find('\"') != std::string::npos)
             s = "\'" + s + "\'";
-        else
+        else /* add double quote sign */
             s = "\"" + s + "\"";
     }
 

@@ -11,6 +11,12 @@
  */
 std::string removeQuoteSigns(std::string s);
 
+/**
+ *@brief Add quote signs around the string
+ *
+ * @param s the string  to operate
+ * @return std::string the result string with quote signs
+ */
 std::string addQuoteSigns(std::string s);
 
 #endif // !_TOOLS_H_
