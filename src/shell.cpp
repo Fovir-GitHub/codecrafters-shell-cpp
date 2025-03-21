@@ -310,7 +310,7 @@ void Shell::HandleCompletion(bool previous_is_tab)
     {
         std::cout << '\n';
         for (const std::string & possible_command : possible_strings)
-            std::cout << possible_command << ' ';
+            std::cout << possible_command << "  ";
         std::cout << "\n$ " << input_line;
     }
 
