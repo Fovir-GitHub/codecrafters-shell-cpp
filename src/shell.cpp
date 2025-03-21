@@ -284,6 +284,8 @@ void Shell::HandleCompletion(bool previous_is_tab)
     std::vector<std::string> possible_strings =
         completion_tree.FindPossibleStringByPrefix(command_part);
 
+    bool only_one_match = (possible_strings.size() == 1);
+
     // There is no possible strings, ring the bell and exit this function
     if (possible_strings.empty())
     {
@@ -293,7 +295,8 @@ void Shell::HandleCompletion(bool previous_is_tab)
 
     // Replace the command part
     input_line.replace(begin_command_part, end_command_part,
-                       GetCommonPrefix(possible_strings));
+                       GetCommonPrefix(possible_strings) +
+                           (only_one_match ? " " : ""));
 
     // Clear the output and output the result of completion
     while (original_length--) std::cout << "\b \b";
